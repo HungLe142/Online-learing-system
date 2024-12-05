@@ -1,0 +1,7 @@
+SELECT name 
+FROM sys.tables;
+GO
+
+SELECT *
+FROM SINH_VIEN
+

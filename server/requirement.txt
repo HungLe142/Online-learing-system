@@ -1,0 +1,5 @@
++ use npm install + module_name
++ modules: (read dependencies in server/pakage.json)
+    express
+    tedious
+    cors
