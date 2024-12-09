@@ -1,25 +1,66 @@
-const userService = require('../services/userService');
+const User = require("../models/userModel");
 
-const getUserInfo = (req, res) => {
-    const { student_id } = req.query;
+exports.createUser = async (req, res) => {
+  try {
+    const { email, so_dien_thoai, ho_ten, ngay_sinh, gioi_tinh, mat_khau, quyen } = req.body;
 
-    if (!student_id) {
-        return res.status(400).json({ error: 'student_id là bắt buộc' });
-    }
-
-    userService.getUserInfo(student_id, (err, userInfo) => {
-        if (err) {
-            console.error('Error in getUserInfo:', err);
-            return res.status(500).json({ error: 'Lỗi server' });
-        }
-
-        const response = {
-            student_id: userInfo.user.ma_sinh_vien,
-            address: userInfo.user.dia_chi
-        };
-
-        res.status(200).json(response);
+    // Tạo người dùng mới
+    const newUser = await User.create({
+      email,
+      so_dien_thoai,
+      ho_ten,
+      ngay_sinh,
+      gioi_tinh,
+      mat_khau,
+      quyen,
     });
+
+    res.status(201).json({ message: "User created successfully", user: newUser });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-module.exports = { getUserInfo };
+exports.getUsers = async (req, res) => {
+    try {
+      const users = await User.findAll();
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  exports.updateUser = async (req, res) => {
+    try {
+      const { user_id } = req.params;
+      const updatedData = req.body;
+  
+      const user = await User.findByPk(user_id);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      await user.update(updatedData);
+      res.status(200).json({ message: "User updated successfully", user });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  exports.deleteUser = async (req, res) => {
+    try {
+      const { user_id } = req.params;
+  
+      const user = await User.findByPk(user_id);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      await user.destroy();
+      res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  

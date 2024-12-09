@@ -1,33 +1,48 @@
-const db = require('../database');
-const { Request, TYPES } = require('tedious');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-// Lỗi ở file này!!!
-const getUserById = (student_id, callback) => {
-    console.log(student_id)
-    const query = 'SELECT * FROM SINH_VIEN WHERE ma_sinh_vien = @student_id'; 
-    
-    const request = new Request(query, (err, rowCount, rows) => {
-        if (err) {
-           return callback(err);
-        }
-        const results = [];
-        rows.forEach((columns) => {
-            const result = {};
-            columns.forEach((column) => {
-                result[column.metadata.colName] = column.value;
-            });
-            results.push(result);
-        });
+const User = sequelize.define(
+  "User",
+  {
+    user_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    email: {
+      type: DataTypes.STRING(255),
+      unique: true,
+      allowNull: false,
+    },
+    so_dien_thoai: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+    },
+    ho_ten: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    ngay_sinh: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    gioi_tinh: {
+      type: DataTypes.ENUM("Nam", "Nữ", "Khác"),
+      allowNull: false,
+    },
+    mat_khau: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    quyen: {
+      type: DataTypes.ENUM("Admin", "Sinh viên", "Giảng viên"),
+      allowNull: false,
+    },
+  },
+  {
+    tableName: "User", 
+    timestamps: false, 
+  }
+);
 
-        callback(null, results[0] || null);
-    });
-
-    // Thêm tham số
-    request.addParameter('student_id', TYPES.VarChar, student_id);
-
-    // Thực hiện truy vấn
-    db.execSql(request);
-
-};
-
-module.exports = { getUserById };
+module.exports = User;

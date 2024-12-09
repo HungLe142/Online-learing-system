@@ -4,6 +4,7 @@
   "description": "This folder is using for developing the server side",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "2425 - HK1 - ĐA HTTT - Nhóm 1",
@@ -11,6 +12,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.1",
+    "sequelize": "^6.37.5",
+    "sequelize-cli": "^6.6.2",
     "tedious": "^18.6.1"
   }
 }
