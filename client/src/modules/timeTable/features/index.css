@@ -1,0 +1,305 @@
+:root {
+    --primary: #457B9D;
+    --heading: #1D3557;
+    --text-grey: #ACACAC;
+    --white: #fff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.5;
+    color: var(--heading);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+.timetable-container {
+    background: var(--white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background: #13334D;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 43px;
+    color: var(--white);
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.page-title {
+    font: 44px 'Poppins', sans-serif;
+    margin: 0;
+}
+
+.semester-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.main-content {
+    background: #9DCCFF;
+    flex: 1;
+    padding: 86px 64px 214px;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 122px;
+}
+
+.stat-card {
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 4px rgba(148,163,184,0.15);
+    padding: 20px 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 148px;
+    width: 197px;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.stat-card:hover,
+.stat-card:focus {
+    transform: translateY(-2px);
+}
+
+.stat-card:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 5px;
+}
+
+.stat-label {
+    color: #B1B1B1;
+    font: 500 24px 'Montserrat', sans-serif;
+    margin: 8px 0;
+}
+
+.stat-value {
+    color: var(--heading);
+    font: 700 36px 'Plus Jakarta Sans', sans-serif;
+}
+
+.stat-underline {
+    width: 32px;
+    height: 2px;
+    margin-top: 8px;
+}
+
+.stat-underline-courses {
+    background: #EC6B47;
+}
+
+.stat-underline-exercises {
+    background: #38C381;
+}
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+}
+
+.timetable {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 10px 10px 10px 10px;
+    border-radius: 20px;
+}
+#week {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #E6FEFF;
+    color: #24B0C9;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    background-color: #fff;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    color: black; /* Màu chữ mặc định là đen */
+    background-color: #fff; /* Màu nền mặc định là trắng */
+}
+
+/* Xóa viền dọc */
+th, td {
+    border-bottom: 1px solid #ccc; /* Chỉ giữ viền dưới */
+}
+
+th {
+    color: black;
+}
+
+/* Nếu là hôm nay (today), đổi màu chữ thành xanh đậm */
+th.today {
+    color: red; /* Xanh đậm */
+    font-weight: bold; /* Tăng cường độ đậm của chữ */
+}
+
+
+.events-sidebar {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(148,163,184,0.15);
+    padding: 12px;
+}
+
+.events-header {
+    margin-bottom: 20px;
+}
+
+.events-title {
+    color: var(--heading);
+    font: 500 16px 'Montserrat', sans-serif;
+}
+
+.events-date {
+    color: var(--text-grey);
+    font: 500 12px 'Montserrat', sans-serif;
+    margin-top: 10px;
+}
+
+.event-card {
+    display: flex;
+    gap: 12px;
+    padding: 8px 16px 8px 24px;
+    border-radius: 4px;
+    background: var(--white);
+    box-shadow: 0 4px 4px rgba(148,163,184,0.15);
+    margin-bottom: 9px;
+    transition: transform 0.2s;
+}
+
+.event-card:hover {
+    transform: translateX(4px);
+}
+
+.event-icon {
+    width: 24px;
+    height: 24px;
+    margin: auto 0;
+}
+
+.event-content {
+    flex: 1;
+}
+
+.event-title {
+    color: var(--primary);
+    font: 500 12px 'Montserrat', sans-serif;
+}
+
+.event-date {
+    color: var(--primary);
+    font: 400 10px 'Montserrat', sans-serif;
+    margin-top: 6px;
+}
+
+.event-time {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 4px;
+}
+
+.event-time-icon {
+    width: 12px;
+    height: 12px;
+    fill: var(--primary);
+}
+
+.event-time-text {
+    color: var(--primary);
+    font: 400 10px 'Montserrat', sans-serif;
+}
+
+@media (max-width: 991px) {
+    .header {
+        padding: 20px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .main-content {
+        padding: 40px 20px 100px;
+    }
+    
+    .stats-container {
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+    
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .calendar {
+        margin-bottom: 40px;
+        padding: 20px;
+    }
+    
+    .week-grid {
+        gap: 10px;
+        font-size: 14px;
+    }
+    
+    .course-card {
+        width: 150px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stat-card,
+    .course-card,
+    .event-card {
+        transition: none;
+    }
+}
