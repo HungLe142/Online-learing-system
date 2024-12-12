@@ -7,19 +7,16 @@ exports.login = async (req, res) => {
   try {
     const { email, mat_khau } = req.body;
 
-    // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu không
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(404).json({ error: "Email không tồn tại!" });
     }
 
-    // Kiểm tra mật khẩu
     const isPasswordValid = await bcrypt.compare(mat_khau, user.mat_khau);
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Mật khẩu không chính xác!" });
     }
 
-    // Trả về thông tin người dùng
     res.status(200).json({
       message: "Đăng nhập thành công!",
       user: {
@@ -34,21 +31,17 @@ exports.login = async (req, res) => {
   }
 };
 
-
-// Tạo người dùng mới
+//tạo người dùng mới
 exports.createUser = async (req, res) => {
   try {
     const { email, so_dien_thoai, ho_ten, ngay_sinh, gioi_tinh, mat_khau, quyen } = req.body;
 
-    // Kiểm tra dữ liệu đầu vào
     if (!email || !mat_khau || !ho_ten) {
       return res.status(400).json({ error: "Email, mật khẩu và họ tên là bắt buộc." });
     }
 
-    // Mã hóa mật khẩu
     const hashedPassword = await bcrypt.hash(mat_khau, 10);
 
-    // Tạo người dùng
     const newUser = await User.create({
       email,
       so_dien_thoai,
@@ -83,13 +76,11 @@ exports.updateUser = async (req, res) => {
     const { user_id } = req.params;
     const updatedData = req.body;
 
-    // Kiểm tra người dùng có tồn tại hay không
     const user = await User.findByPk(user_id);
     if (!user) {
       return res.status(404).json({ error: "Người dùng không tồn tại." });
     }
 
-    // Cập nhật dữ liệu
     await user.update(updatedData);
     res.status(200).json({ message: "Cập nhật thành công!", user });
   } catch (error) {
@@ -103,13 +94,11 @@ exports.deleteUser = async (req, res) => {
   try {
     const { user_id } = req.params;
 
-    // Kiểm tra người dùng có tồn tại hay không
     const user = await User.findByPk(user_id);
     if (!user) {
       return res.status(404).json({ error: "Người dùng không tồn tại." });
     }
 
-    // Xóa người dùng
     await user.destroy();
     res.status(200).json({ message: "Xóa tài khoản thành công!" });
   } catch (error) {
