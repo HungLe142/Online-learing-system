@@ -1,8 +1,8 @@
 const { Sequelize } = require("sequelize");
 
 // Kết nối tới SQL Server
-const sequelize = new Sequelize("server241cs.database.windows.net", "adminOLS", "1944!#ASDF!a", {
-  host: "localhost",
+const sequelize = new Sequelize("ELS", "adminOLS", "1944!#ASDF!a", {
+  host: "server241cs.database.windows.net",
   dialect: "mssql",
   dialectOptions: {
     options: {
@@ -11,5 +11,14 @@ const sequelize = new Sequelize("server241cs.database.windows.net", "adminOLS", 
     },
   },
 });
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Kết nối cơ sở dữ liệu thành công!");
+  })
+  .catch((err) => {
+    console.error("Không thể kết nối cơ sở dữ liệu:", err);
+  });
 
 module.exports = sequelize;

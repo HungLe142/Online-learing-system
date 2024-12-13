@@ -1,17 +1,14 @@
-const User = require("../../models/user.model");
+const jwt = require("jsonwebtoken");
 
-module.exports.requireAuth = async (req, res, next) => {
-  const token = req.cookies.token;
+module.exports = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(403).send("Không có quyền truy cập!");
 
-  if (!token) {
-    res.redirect("/user/login");    
-  } else {
-    const user = await User.findOne({ token: token });
-    if (!user) {
-      res.redirect("/user/login");
-    } else {
-      res.locals.user = user;
-      next();
-    }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).send("Token không hợp lệ!");
   }
-}
+};

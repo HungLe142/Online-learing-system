@@ -1,0 +1,6 @@
+INSERT INTO KHOA (khoa_id, ten_khoa)
+VALUES 
+(1,'Faculty of Computer Science and Technology' ),
+(2, 'Faculty of Electrical Engineering'),
+(3,'Faculty of Environmental Science'),
+(4, 'Faculty of Chemical Engineering');
