@@ -10,7 +10,6 @@
 */
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const User = require("../models/userModel");
 
 // Cập nhật thông tin người dùng
 exports.updateUser = async (req, res) => {
