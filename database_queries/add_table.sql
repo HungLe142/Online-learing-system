@@ -42,11 +42,10 @@ CREATE TABLE MON_HOC (
 DROP TABLE IF EXISTS DIEM;
 CREATE TABLE DIEM (
     diem_id INT PRIMARY KEY, -- ID của bảng điểm (khóa chính)
-    phan_tram_diem VARCHAR(20) NOT NULL, -- Phần trăm các cột thành phần điểm
-    so_diem FLOAT NOT NULL, -- Số điểm
-    ten_thanh_phan VARCHAR(255) NOT NULL, -- Tên thành phần các cột điểm
-    ma_mon_hoc VARCHAR(20) NOT NULL, -- Mã môn học của điểm (liên kết với bảng MON_HOC)
-    
+    diem_bt FLOAT NOT NULL, 
+    diem_gk FLOAT NOT NULL, 
+    diem_ck FLOAT NOT NULL, 
+    diem_btl FLOAT NOT NULL, 
 );
 
 DROP TABLE IF EXISTS SINH_VIEN;
