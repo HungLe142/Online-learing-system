@@ -1,5 +1,8 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+/*
+  To do: Handle Post request, modify data of tuple (personal information) (General)
+*/
 
 
 //kiểm tra login và trả về thông tin 
