@@ -55,7 +55,7 @@ CREATE TABLE SINH_VIEN (
     user_id INT NOT NULL, -- ID của sinh viên trên hệ thống
     dia_chi VARCHAR(255) NOT NULL, -- Địa chỉ của sinh viên
     khoa_id INT NOT NULL, -- Khoa mà sinh viên thuộc
-    diem_id INT NOT NULL, -- Điểm của sinh viên
+    --diem_id INT NOT NULL, -- Điểm của sinh viên
     GPA FLOAT NOT NULL, -- GPA của sinh viên
     so_tin_chi_tich_luy INT NOT NULL, -- Số tín chỉ tích lũy của sinh viên
    
@@ -79,7 +79,7 @@ CREATE TABLE THAM_GIA (
     tham_gia_id INT PRIMARY KEY, -- Mã tham gia (khóa chính)
     ma_sinh_vien VARCHAR(20) NOT NULL, -- Mã sinh viên (liên kết với bảng SINH_VIEN)
     lop_id INT NOT NULL, -- Mã lớp (liên kết với bảng LOP)
-    diem FLOAT NOT NULL, -- Điểm của môn học (bắt buộc nhập)
+    diem_id INT NOT NULL, -- Điểm của môn học (bắt buộc nhập)
     
 );
 
@@ -118,17 +118,24 @@ CREATE TABLE DANG_KY_MON_HOC (
     trang_thai_dang_ky VARCHAR(20) NOT NULL CHECK (trang_thai_dang_ky IN ('Thành công', 'Thiếu điều kiện', 'Đã hủy')), -- Trạng thái đăng ký
     
 );
-
-DROP TABLE IF EXISTS MON_SINH_VIEN_HOC;
-CREATE TABLE MON_SINH_VIEN_HOC (
-    mon_sinh_vien_hoc_id INT PRIMARY KEY, -- ID đăng ký môn học của sinh viên (khóa chính)
-    ma_sinh_vien VARCHAR(20) NOT NULL, -- Mã sinh viên (khóa ngoại, liên kết với bảng SINH_VIEN)
-    ma_mon_hoc VARCHAR(20) NOT NULL, -- Mã môn học (khóa ngoại, liên kết với bảng MON_HOC)
-    hoc_ky VARCHAR(20) NOT NULL, -- Học kỳ mà sinh viên học môn này (khóa ngoại, liên kết với bảng HOC_KY)
-    trang_thai_hoc VARCHAR(20) NOT NULL CHECK (trang_thai_hoc IN ('Đang học', 'Đã học', 'Chưa học')), -- Trạng thái học môn
-    diem_id INT, -- Điểm của môn học (khóa ngoại, liên kết với bảng DIEM)
-   
+DROP TABLE IF EXISTS TAI_NGUYEN_LOP_HOCHOC;
+CREATE TABLE TAI_NGUYEN_LOP_HOCHOC (
+    lop_id INT NOT NULL, 
+    ten NVARCHAR(255), 
+    url NVARCHAR(2083),
+    PRIMARY KEY(lop_id,ten,url)
 );
+
+--DROP TABLE IF EXISTS MON_SINH_VIEN_HOC;
+--CREATE TABLE MON_SINH_VIEN_HOC (
+   -- mon_sinh_vien_hoc_id INT PRIMARY KEY, -- ID đăng ký môn học của sinh viên (khóa chính)
+   -- ma_sinh_vien VARCHAR(20) NOT NULL, -- Mã sinh viên (khóa ngoại, liên kết với bảng SINH_VIEN)
+   -- ma_mon_hoc VARCHAR(20) NOT NULL, -- Mã môn học (khóa ngoại, liên kết với bảng MON_HOC)
+  --  hoc_ky VARCHAR(20) NOT NULL, -- Học kỳ mà sinh viên học môn này (khóa ngoại, liên kết với bảng HOC_KY)
+   -- trang_thai_hoc VARCHAR(20) NOT NULL CHECK (trang_thai_hoc IN ('Đang học', 'Đã học', 'Chưa học')), -- Trạng thái học môn
+  --  diem_id INT, -- Điểm của môn học (khóa ngoại, liên kết với bảng DIEM)
+   
+--);
 
 INSERT INTO [USER] (user_id, email, so_dien_thoai, ho_ten, ngay_sinh, gioi_tinh, mat_khau, quyen)
 VALUES (1, 'example@example.com', '0123456789', 'Nguyen A', '1998-01-01', 'Nam', 'password_hash', 'Sinh viên');
