@@ -98,6 +98,7 @@ CREATE TABLE TIN_NHAN (
     nguoi_gui_id INT NOT NULL, -- ID của người gửi tin nhắn (liên kết đến bảng USER)
     noi_dung TEXT NOT NULL, -- Nội dung của tin nhắn
     thoi_gian DATETIME NOT NULL, -- Thời gian gửi tin nhắn
+    dien_dan_id INT
    
 );
 
@@ -107,17 +108,6 @@ CREATE TABLE QUAN_TRI_VIEN (
     user_id INT NOT NULL, -- ID của quản trị viên trên hệ thống (liên kết với bảng USER)
     
 );
-
-DROP TABLE IF EXISTS LOG_HOAT_DONG;
-CREATE TABLE LOG_HOAT_DONG (
-    log_id INT PRIMARY KEY, -- ID của hoạt động (khóa chính)
-    admin_id INT NOT NULL, -- ID của admin thực hiện hành động (liên kết với bảng USER)
-    user_id INT NOT NULL, -- ID của người dùng liên quan (liên kết với bảng USER)
-    hanh_dong VARCHAR(20) NOT NULL CHECK (hanh_dong IN ('Thêm', 'Sửa', 'Xóa')), -- Hành động của admin
-    thoi_gian DATETIME NOT NULL, -- Thời gian admin thực hiện hành động
-    
-);
-
 
 DROP TABLE IF EXISTS DANG_KY_MON_HOC;
 CREATE TABLE DANG_KY_MON_HOC (

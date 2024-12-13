@@ -28,12 +28,11 @@ ALTER TABLE DIEN_DAN
 ALTER TABLE TIN_NHAN
 	ADD CONSTRAINT FK_TinNhan_User FOREIGN KEY (nguoi_gui_id) REFERENCES [USER](user_id)  ; -- Ràng buộc khóa ngoại đến USER
 
+ALTER TABLE TIN_NHAN
+	ADD CONSTRAINT FK_TinNhan_DienDan FOREIGN KEY (dien_dan_id) REFERENCES DIEN_DAN(dien_dan_id)  ; -- Ràng buộc khóa ngoại đến USER
+
 ALTER TABLE QUAN_TRI_VIEN
 	ADD CONSTRAINT FK_QuanTri_User FOREIGN KEY (user_id) REFERENCES [USER](user_id)  ; -- Ràng buộc khóa ngoại đến bảng USER
-
-ALTER TABLE LOG_HOAT_DONG
-	ADD CONSTRAINT FK_LogHoatDong_Admin FOREIGN KEY (admin_id) REFERENCES [USER](user_id)  , -- Ràng buộc khóa ngoại đến bảng USER cho admin
-    CONSTRAINT FK_LogHoatDong_User FOREIGN KEY (user_id) REFERENCES [USER](user_id)  ; -- Ràng buộc khóa ngoại đến bảng USER cho người dùng
 
 ALTER TABLE DANG_KY_MON_HOC
 	ADD CONSTRAINT FK_DangKy_SinhVien FOREIGN KEY (ma_sinh_vien) REFERENCES SINH_VIEN(ma_sinh_vien)  , -- Ràng buộc khóa ngoại đến bảng SINH_VIEN
