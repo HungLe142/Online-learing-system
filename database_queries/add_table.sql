@@ -7,7 +7,9 @@ CREATE TABLE KHOA (
 DROP TABLE IF EXISTS HOC_KY;
 CREATE TABLE HOC_KY (
     hoc_ky VARCHAR(20) PRIMARY KEY, -- Tên học kỳ (khóa chính)
-    nam_hoc VARCHAR(20) NOT NULL -- Năm học của học kỳ đó
+    nam_hoc VARCHAR(20) NOT NULL, -- Năm học của học kỳ đó
+    thoi_gian_bat_dau DATETIME,
+    thoi_gian_ket_thuc DATETIME
 );
 
 
@@ -17,10 +19,11 @@ CREATE TABLE [User] (
     email VARCHAR(255) UNIQUE, -- Email đăng nhập
     so_dien_thoai VARCHAR(20) NOT NULL, -- Số điện thoại liên lạc
     ho_ten VARCHAR(255) NOT NULL, -- Họ tên user
-    ngay_sinh DATE NOT NULL, -- Ngày sinh user
-    gioi_tinh VARCHAR(10) CHECK (gioi_tinh IN ('Nam', 'Nữ', 'Khác')) NOT NULL, -- Giới tính của user
+    ngay_sinh DATE, -- Ngày sinh user
+    gioi_tinh VARCHAR(10) CHECK (gioi_tinh IN ('Male', 'Female')) NOT NULL, -- Giới tính của user
+    dia_chi VARCHAR(255),
     mat_khau VARCHAR(255) NOT NULL, -- Mật khẩu của user
-    quyen VARCHAR(20) CHECK (quyen IN ('Admin', 'Sinh viên', 'Giảng viên')) NOT NULL -- Phân loại người dùng
+    quyen VARCHAR(20) CHECK (quyen IN ('Admin', 'Student', 'Lecture')) NOT NULL -- Phân loại người dùng
 );
 
 DROP TABLE IF EXISTS GIANG_VIEN;
@@ -52,11 +55,10 @@ DROP TABLE IF EXISTS SINH_VIEN;
 CREATE TABLE SINH_VIEN (
     ma_sinh_vien VARCHAR(20) PRIMARY KEY, -- Mã sinh viên
     user_id INT NOT NULL, -- ID của sinh viên trên hệ thống
-    dia_chi VARCHAR(255) NOT NULL, -- Địa chỉ của sinh viên
     khoa_id INT NOT NULL, -- Khoa mà sinh viên thuộc
     --diem_id INT NOT NULL, -- Điểm của sinh viên
-    GPA FLOAT NOT NULL, -- GPA của sinh viên
-    so_tin_chi_tich_luy INT NOT NULL, -- Số tín chỉ tích lũy của sinh viên
+    GPA FLOAT, -- GPA của sinh viên
+    so_tin_chi_tich_luy INT, -- Số tín chỉ tích lũy của sinh viên
    
 );
 
@@ -67,9 +69,16 @@ CREATE TABLE LOP (
     ma_mon_hoc VARCHAR(20) NOT NULL, -- ID của môn học (liên kết với bảng MON_HOC)
     hoc_ky VARCHAR(20) NOT NULL, -- Học kỳ của lớp học (liên kết với bảng HOC_KY)
     ma_giang_vien VARCHAR(20) NOT NULL, -- Mã giảng viên phụ trách lớp học (liên kết với bảng GIANG_VIEN)
-    phong_hoc VARCHAR(20) NOT NULL, -- Phòng học (bắt buộc nhập)
-    tiet VARCHAR(20) NOT NULL, -- Tiết học (bắt buộc nhập)
-    thu VARCHAR(255) NOT NULL, -- Thứ học (bắt buộc nhập)
+    
+);
+DROP TABLE IF EXISTS BUOI_HOC;
+CREATE TABLE BUOI_HOC (
+    lop_id INT NOT NULL, 
+    tiet_ket_thuc VARCHAR(20) NOT NULL, 
+    tiet_bat_dau VARCHAR(20) NOT NULL,
+    phong_hoc VARCHAR(20) NOT NULL,
+    thu VARCHAR(255) NOT NULL,
+    PRIMARY KEY(lop_id, tiet_ket_thuc, thu),
     
 );
 
@@ -78,8 +87,8 @@ CREATE TABLE THAM_GIA (
     tham_gia_id INT PRIMARY KEY, -- Mã tham gia (khóa chính)
     ma_sinh_vien VARCHAR(20) NOT NULL, -- Mã sinh viên (liên kết với bảng SINH_VIEN)
     lop_id INT NOT NULL, -- Mã lớp (liên kết với bảng LOP)
-    diem_id INT NOT NULL, -- Điểm của môn học (bắt buộc nhập)
-    
+    diem_id INT UNIQUE NOT NULL, -- Điểm của môn học (bắt buộc nhập)
+    CONSTRAINT unique_ma_sinh_vien_lop_id UNIQUE (ma_sinh_vien, lop_id) -- Ràng buộc để ma_sinh_vien và lop_id là duy nhất
 );
 
 DROP TABLE IF EXISTS DIEN_DAN;
@@ -117,12 +126,12 @@ CREATE TABLE DANG_KY_MON_HOC (
     trang_thai_dang_ky VARCHAR(20) NOT NULL CHECK (trang_thai_dang_ky IN ('Thành công', 'Thiếu điều kiện', 'Đã hủy')), -- Trạng thái đăng ký
     
 );
-DROP TABLE IF EXISTS TAI_NGUYEN_LOP_HOCHOC;
-CREATE TABLE TAI_NGUYEN_LOP_HOCHOC (
+DROP TABLE IF EXISTS TAI_NGUYEN_LOP_HOC;
+CREATE TABLE TAI_NGUYEN_LOP_HOC (
     lop_id INT NOT NULL, 
     ten NVARCHAR(255), 
     url NVARCHAR(2083),
-    PRIMARY KEY(lop_id,ten,url)
+    PRIMARY KEY(lop_id,ten)
 );
 
 --DROP TABLE IF EXISTS MON_SINH_VIEN_HOC;
@@ -136,11 +145,8 @@ CREATE TABLE TAI_NGUYEN_LOP_HOCHOC (
    
 --);
 
-INSERT INTO [USER] (user_id, email, so_dien_thoai, ho_ten, ngay_sinh, gioi_tinh, mat_khau, quyen)
-VALUES (1, 'example@example.com', '0123456789', 'Nguyen A', '1998-01-01', 'Nam', 'password_hash', 'Sinh viên');
 
 SELECT * FROM [USER];
-DELETE FROM [USER] WHERE user_id = 1;
 
 
 

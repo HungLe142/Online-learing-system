@@ -6,8 +6,7 @@ ALTER TABLE MON_HOC
     ADD CONSTRAINT FK_MonHoc_Khoa FOREIGN KEY (khoa_id) REFERENCES KHOA(khoa_id)  ; -- Ràng buộc khóa ngoại liên kết với bảng KHOA
 
 ALTER TABLE DIEM
-	ADD CONSTRAINT FK_Diem_MonHoc FOREIGN KEY (ma_mon_hoc) REFERENCES MON_HOC(ma_mon_hoc)  ,-- Ràng buộc khóa ngoại đến bảng MON_HOC
-	CONSTRAINT FK_diem_lop FOREIGN KEY (diem_id) REFERENCES THAM_GIA(diem_id)  ;
+	ADD CONSTRAINT FK_diem_tham_gia FOREIGN KEY (diem_id) REFERENCES THAM_GIA(diem_id);
 
 ALTER TABLE SINH_VIEN
 	ADD CONSTRAINT FK_User FOREIGN KEY (user_id) REFERENCES [User](user_id)  , -- Khóa ngoại liên kết bảng User
