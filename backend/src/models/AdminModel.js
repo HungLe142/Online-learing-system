@@ -60,3 +60,38 @@ export async function addStudent(data) {
         return { success: false, message: 'Failed to add student.', error: err.message };
     }
 }
+
+export async function adminLogin(data) {
+    try {
+        const pool = await connectToDb();
+        const result = await pool.request()
+            .input('user_mail', sql.VarChar, data.userMail)
+            .input('mat_khau', sql.VarChar, data.password)
+            .execute('KiemTraDangNhapAdmin');
+
+        if (result.recordset.length > 0) {
+            // Nếu tìm thấy admin, trả về thông tin admin
+            const admin = result.recordset[0];
+            return {
+                success: true,
+                message: 'Login successful',
+                data: {
+                    user_id: admin.user_id,
+                    user_mail: admin.user_mail,
+                    ho_ten: admin.ho_ten,
+                    so_dien_thoai: admin.so_dien_thoai,
+                    dia_chi: admin.dia_chi,
+                    role: "admin"
+                  }
+            };
+        } else {
+            return {
+                success: false,
+                message: 'Invalid email or password'
+            };
+        }
+    } catch (err) {
+        console.error('Error during login:', err);
+        return false;
+    }
+}

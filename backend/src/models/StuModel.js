@@ -22,7 +22,7 @@ export async function getStudentClassInfo(data) {
   try {
     const pool = await connectToDb(); // Kết nối đến DB
     const result = await pool.query`
-      EXEC GetStudentClassInfo @ma_sinh_vien = ${data.studentID}, @hoc_ky = ${data.semesterID}
+      EXEC GetStudentCourseInfo @ma_sinh_vien = ${data.studentID}, @hoc_ky = ${data.semesterID}
     `; 
     if (result.recordset.length === 0) {
       return { success: false, message: 'No data found.' };

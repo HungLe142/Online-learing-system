@@ -1,5 +1,15 @@
 
 -- Tạo Bảng ---------------------------------------------------------------------------------------------------------------- 
+CREATE TABLE ADMIN (
+    admin_id VARCHAR(20) PRIMARY KEY,
+    user_mail VARCHAR(30) NOT NULL UNIQUE, 
+	mat_khau VARCHAR(255) NOT NULL, 
+	ho_ten NVARCHAR(255) NOT NULL, 
+    email VARCHAR(255) ,
+    so_dien_thoai VARCHAR(20) NOT NULL, 
+    dia_chi NVARCHAR(255)
+);
+
 CREATE TABLE [USER] (
     user_id VARCHAR(20) PRIMARY KEY,
     user_mail VARCHAR(30) NOT NULL UNIQUE, -- mail người dùng
@@ -274,13 +284,52 @@ CREATE PROCEDURE KiemTraDangNhap
     @mat_khau VARCHAR(255)
 AS
 BEGIN
+    -- Kiểm tra nếu thông tin đăng nhập hợp lệ
     IF EXISTS (SELECT 1 FROM [USER] WHERE user_mail = @user_mail AND mat_khau = @mat_khau)
     BEGIN
-        RETURN 0; -- Trả về mã thành công
+        -- Trả về thông tin người dùng
+        SELECT 
+            user_id,
+            user_mail,
+            ho_ten,
+            so_dien_thoai,
+            ngay_sinh,
+            gioi_tinh,
+            dia_chi,
+            khoa_id
+        FROM [USER]
+        WHERE user_mail = @user_mail;
     END
     ELSE
     BEGIN
-        RETURN 1; -- Trả về mã lỗi
+        -- Trả về lỗi đăng nhập
+        SELECT 
+            'error' AS status,
+            'Invalid email or password' AS message;
+    END
+END;
+GO
+
+CREATE PROCEDURE KiemTraDangNhapAdmin
+    @user_mail VARCHAR(30),
+    @mat_khau VARCHAR(255)
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM ADMIN WHERE user_mail = @user_mail AND mat_khau = @mat_khau)
+    BEGIN
+        SELECT 
+            admin_id, 
+            user_mail, 
+            ho_ten, 
+            email, 
+            so_dien_thoai, 
+            dia_chi 
+        FROM ADMIN
+        WHERE user_mail = @user_mail AND mat_khau = @mat_khau;
+    END
+    ELSE
+    BEGIN
+        RETURN 1; -- Trả về mã lỗi nếu không tìm thấy admin
     END
 END;
 GO
@@ -395,6 +444,7 @@ BEGIN
         RETURN ERROR_NUMBER();
     END CATCH
 END;
+GO
 
 CREATE PROCEDURE CapNhatDiem
     @lop_id VARCHAR(20),           -- Mã lớp
@@ -437,7 +487,50 @@ BEGIN
         WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien;
     END
 END;
+GO
+
+CREATE PROCEDURE GetStudentCourseInfo
+    @ma_sinh_vien VARCHAR(20),  -- Tham số sinh viên
+    @hoc_ky VARCHAR(20)         -- Tham số học kỳ
+AS
+BEGIN
+    SELECT 
+        sv.ma_sinh_vien,
+        lh.lop_id,
+        lh.ma_mon_hoc + ' - ' + mh.ten_mon_hoc + ' - ' + lh.hoc_ky AS ten_lop,
+        lh.ma_mon_hoc,
+        lh.hoc_ky,
+        lh.ma_giang_vien,
+        gv.ma_giang_vien,
+        gv.chuyen_nganh,
+        u.user_id,
+        u.email,
+        u.so_dien_thoai,
+        u.ho_ten,
+        u.ngay_sinh,
+        u.gioi_tinh,
+        u.dia_chi,
+        u.khoa_id
+    FROM SINH_VIEN sv
+    JOIN THAM_GIA_LOP_HOC dk ON dk.ma_sinh_vien = sv.ma_sinh_vien
+    JOIN LOP_HOC lh ON lh.lop_id = dk.lop_id
+    JOIN MON_HOC mh ON mh.ma_mon_hoc = lh.ma_mon_hoc
+    JOIN GIANG_VIEN gv ON gv.ma_giang_vien = lh.ma_giang_vien
+    JOIN [USER] u ON u.user_id = gv.ma_giang_vien
+    WHERE sv.ma_sinh_vien = @ma_sinh_vien
+    AND lh.hoc_ky = @hoc_ky;
+END;
+
 -- Thêm Dữ Liệu ----------------------------------------------------------------------------------------------------------------
+INSERT INTO ADMIN (admin_id, user_mail, mat_khau, ho_ten, email, so_dien_thoai, dia_chi)
+VALUES 
+    ('AD001', 'admin1@hcmut.edu.vn', 'password1', N'Nguyễn Quản Trị', 'admin1@gmail.com', '0901234567', N'123 Đường Lê Lợi, TP.HCM'),
+    ('AD002', 'admin2@hcmut.edu.vn', 'password2', N'Lê Minh Hoàng', 'admin2@gmail.com', '0902345678', N'456 Đường Nguyễn Thái Học, TP.HCM'),
+    ('AD003', 'admin3@hcmut.edu.vn', 'password3', N'Trần Thị Lan', 'admin3@gmail.com', '0903456789', N'789 Đường Hai Bà Trưng, TP.HCM'),
+    ('AD004', 'admin4@hcmut.edu.vn', 'password4', N'Phan Hoàng Nam', 'admin4@gmail.com', '0904567890', N'101 Đường Lê Văn Sỹ, TP.HCM'),
+    ('AD005', 'admin5@hcmut.edu.vn', 'password5', N'Đoàn Thanh Vân', 'admin5@gmail.com', '0905678901', N'202 Đường Đoàn Văn Bơ, TP.HCM');
+
+
 SET DATEFORMAT DMY;
 ALTER TABLE KHOA NOCHECK CONSTRAINT ALL;
 INSERT INTO KHOA (khoa_id, ten_khoa, ma_truong_khoa, ngay_thanh_lap)

@@ -1,4 +1,4 @@
-import { addLecturer, addStudent } from '../models/AdminModel.js'; // Đảm bảo gọi đúng hàm từ model
+import { addLecturer, addStudent, adminLogin } from '../models/AdminModel.js'; // Đảm bảo gọi đúng hàm từ model
 
 // Controller thêm giảng viên
 export async function AddLecturer(req, res) {
@@ -35,5 +35,24 @@ export async function AddStudent(req, res) {
             message: "An error occurred while processing the request.",
             error: error.message
         });
+    }
+}
+
+export async function AdminLogin(req, res) {
+    try {
+      const result  = await adminLogin(req.body);
+      
+      if (result.success) {
+        return res.status(200).json({
+          token: "hehe",
+          user: result.data
+        });
+      } else {
+        return res.status(401).json({
+          message: result.message
+        });
+      }
+    } catch (error) {
+      return res.status(500).json({ message: 'Đã xảy ra lỗi trong quá trình đăng nhập', error: error.message });
     }
 }
