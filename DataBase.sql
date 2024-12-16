@@ -396,6 +396,47 @@ BEGIN
     END CATCH
 END;
 
+CREATE PROCEDURE CapNhatDiem
+    @lop_id VARCHAR(20),           -- Mã lớp
+    @ma_sinh_vien VARCHAR(20),     -- Mã sinh viên
+    @diem_bt FLOAT = NULL,         -- Điểm bài tập
+    @diem_btl FLOAT = NULL,        -- Điểm bài tập lớn
+    @diem_gk FLOAT = NULL,         -- Điểm giữa kỳ
+    @diem_ck FLOAT = NULL          -- Điểm cuối kỳ
+AS
+BEGIN
+    -- Kiểm tra nếu điểm bài tập không phải NULL thì mới cập nhật
+    IF @diem_bt IS NOT NULL
+    BEGIN
+        UPDATE THAM_GIA_LOP_HOC
+        SET diem_bt = @diem_bt
+        WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien;
+    END
+
+    -- Kiểm tra nếu điểm bài tập lớn không phải NULL thì mới cập nhật
+    IF @diem_btl IS NOT NULL
+    BEGIN
+        UPDATE THAM_GIA_LOP_HOC
+        SET diem_btl = @diem_btl
+        WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien;
+    END
+
+    -- Kiểm tra nếu điểm giữa kỳ không phải NULL thì mới cập nhật
+    IF @diem_gk IS NOT NULL
+    BEGIN
+        UPDATE THAM_GIA_LOP_HOC
+        SET diem_gk = @diem_gk
+        WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien;
+    END
+
+    -- Kiểm tra nếu điểm cuối kỳ không phải NULL thì mới cập nhật
+    IF @diem_ck IS NOT NULL
+    BEGIN
+        UPDATE THAM_GIA_LOP_HOC
+        SET diem_ck = @diem_ck
+        WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien;
+    END
+END;
 -- Thêm Dữ Liệu ----------------------------------------------------------------------------------------------------------------
 SET DATEFORMAT DMY;
 ALTER TABLE KHOA NOCHECK CONSTRAINT ALL;
