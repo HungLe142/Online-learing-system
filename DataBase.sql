@@ -501,7 +501,6 @@ BEGIN
         lh.ma_mon_hoc,
         lh.hoc_ky,
         lh.ma_giang_vien,
-        gv.ma_giang_vien,
         gv.chuyen_nganh,
         u.user_id,
         u.email,
