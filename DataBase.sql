@@ -1,6 +1,4 @@
 
-USE DataBase1;
-
 -- Tạo Bảng ---------------------------------------------------------------------------------------------------------------- 
 CREATE TABLE [USER] (
     user_id VARCHAR(20) PRIMARY KEY,
@@ -112,50 +110,6 @@ CREATE TABLE TIN_NHAN (
     phan_hoi_id INT,
 	PRIMARY KEY(lop_id, dien_dan_id, tin_nhan_id)
 );
-
-CREATE PROCEDURE CapNhatDiem
-    @lop_id VARCHAR(20),           -- Mã lớp
-    @ma_sinh_vien VARCHAR(20),     -- Mã sinh viên
-    @diem_bt FLOAT = NULL,         -- Điểm bài tập
-    @diem_btl FLOAT = NULL,        -- Điểm bài tập lớn
-    @diem_gk FLOAT = NULL,         -- Điểm giữa kỳ
-    @diem_ck FLOAT = NULL          -- Điểm cuối kỳ
-AS
-BEGIN
-    -- Kiểm tra nếu điểm bài tập không phải NULL thì mới cập nhật
-    IF @diem_bt IS NOT NULL
-    BEGIN
-        UPDATE THAM_GIA_LOP_HOC
-        SET diem_bt = @diem_bt
-        WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien;
-    END
-
-    -- Kiểm tra nếu điểm bài tập lớn không phải NULL thì mới cập nhật
-    IF @diem_btl IS NOT NULL
-    BEGIN
-        UPDATE THAM_GIA_LOP_HOC
-        SET diem_btl = @diem_btl
-        WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien;
-    END
-
-    -- Kiểm tra nếu điểm giữa kỳ không phải NULL thì mới cập nhật
-    IF @diem_gk IS NOT NULL
-    BEGIN
-        UPDATE THAM_GIA_LOP_HOC
-        SET diem_gk = @diem_gk
-        WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien;
-    END
-
-    -- Kiểm tra nếu điểm cuối kỳ không phải NULL thì mới cập nhật
-    IF @diem_ck IS NOT NULL
-    BEGIN
-        UPDATE THAM_GIA_LOP_HOC
-        SET diem_ck = @diem_ck
-        WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien;
-    END
-END;
-
-
 
 -- Tạo Ràng Buộc ----------------------------------------------------------------------------------------------------------------
 ALTER TABLE [USER]
@@ -346,60 +300,80 @@ CREATE PROCEDURE ThemGiangVien (
 )
 AS
 BEGIN
-    -- Tạo user_id tự động cho giảng viên
-    DECLARE @new_user_id VARCHAR(20);
-    WITH ExtractedIDs AS (
+    BEGIN TRY
+        -- Tạo user_id tự động cho giảng viên
+        DECLARE @new_user_id VARCHAR(20);
+        WITH ExtractedIDs AS (
+            SELECT 
+                CAST(SUBSTRING(ma_giang_vien, 3, LEN(ma_giang_vien) - 2) AS INT) AS stt
+            FROM GIANG_VIEN
+            WHERE ma_giang_vien LIKE 'GV%'
+        )
         SELECT 
-            CAST(SUBSTRING(ma_giang_vien, 3, LEN(ma_giang_vien) - 2) AS INT) AS stt
-        FROM GIANG_VIEN
-        WHERE ma_giang_vien LIKE 'GV%'
-    )
-    SELECT 
-        @new_user_id = 'GV' + RIGHT('000' + CAST(ISNULL(MAX(stt), 0) + 1 AS VARCHAR), 3)
-    FROM ExtractedIDs;
+            @new_user_id = 'GV' + RIGHT('000' + CAST(ISNULL(MAX(stt), 0) + 1 AS VARCHAR), 3)
+        FROM ExtractedIDs;
 
-    -- Thêm vào bảng USER
-    INSERT INTO [USER] (user_id, user_mail, mat_khau, ho_ten, gioi_tinh, ngay_sinh, email, so_dien_thoai, dia_chi, khoa_id)
-    VALUES (@new_user_id, @user_mail, @mat_khau, @ho_ten, @gioi_tinh, @ngay_sinh, @email, @so_dien_thoai, @dia_chi, @khoa_id);
-    
-    -- Thêm vào bảng GIANG_VIEN
-    INSERT INTO GIANG_VIEN (ma_giang_vien, hoc_vi, chuyen_nganh)
-    VALUES (@new_user_id, @hoc_vi, @chuyen_nganh);
+        -- Thêm vào bảng USER
+        INSERT INTO [USER] (user_id, user_mail, mat_khau, ho_ten, gioi_tinh, ngay_sinh, email, so_dien_thoai, dia_chi, khoa_id)
+        VALUES (@new_user_id, @user_mail, @mat_khau, @ho_ten, @gioi_tinh, @ngay_sinh, @email, @so_dien_thoai, @dia_chi, @khoa_id);
+
+        -- Thêm vào bảng GIANG_VIEN
+        INSERT INTO GIANG_VIEN (ma_giang_vien, hoc_vi, chuyen_nganh)
+        VALUES (@new_user_id, @hoc_vi, @chuyen_nganh);
+
+        -- Nếu thành công, trả về 0
+        RETURN 0;
+
+    END TRY
+    BEGIN CATCH
+        -- Bắt lỗi và trả về mã lỗi
+        RETURN ERROR_NUMBER(); -- Trả về mã lỗi SQL Server
+    END CATCH
 END;
 GO
 
 CREATE PROCEDURE ThemSinhVien (
-    @user_mail VARCHAR(30),  -- Email của sinh viên
-    @mat_khau VARCHAR(255),  -- Mật khẩu của sinh viên
-    @ho_ten NVARCHAR(255),   -- Họ tên của sinh viên
-    @gioi_tinh VARCHAR(10),  -- Giới tính của sinh viên
-    @ngay_sinh DATE,         -- Ngày sinh của sinh viên
-    @email VARCHAR(255),     -- Email riêng (nếu có)
-    @so_dien_thoai VARCHAR(20), -- Số điện thoại
-    @dia_chi NVARCHAR(255), -- Địa chỉ
-    @khoa_id VARCHAR(20)    -- Khoa ID
+    @user_mail VARCHAR(30),       -- Email của sinh viên
+    @mat_khau VARCHAR(255),       -- Mật khẩu của sinh viên
+    @ho_ten NVARCHAR(255),        -- Họ tên của sinh viên
+    @gioi_tinh VARCHAR(10),       -- Giới tính của sinh viên
+    @ngay_sinh DATE,              -- Ngày sinh của sinh viên
+    @email VARCHAR(255),          -- Email riêng (nếu có)
+    @so_dien_thoai VARCHAR(20),   -- Số điện thoại
+    @dia_chi NVARCHAR(255),       -- Địa chỉ
+    @khoa_id VARCHAR(20)          -- Khoa ID
 )
 AS
 BEGIN
-    -- Tạo user_id tự động cho sinh viên
-    DECLARE @new_user_id VARCHAR(20);
-    WITH ExtractedIDs AS (
+    BEGIN TRY
+        -- Tạo user_id tự động cho sinh viên
+        DECLARE @new_user_id VARCHAR(20);
+        WITH ExtractedIDs AS (
+            SELECT 
+                CAST(SUBSTRING(ma_sinh_vien, 3, LEN(ma_sinh_vien) - 2) AS INT) AS stt
+            FROM SINH_VIEN
+            WHERE ma_sinh_vien LIKE 'SV%'
+        )
         SELECT 
-            CAST(SUBSTRING(ma_sinh_vien, 3, LEN(ma_sinh_vien) - 2) AS INT) AS stt
-        FROM SINH_VIEN
-        WHERE ma_sinh_vien LIKE 'SV%'
-    )
-    SELECT 
-        @new_user_id = 'SV' + RIGHT('000' + CAST(ISNULL(MAX(stt), 0) + 1 AS VARCHAR), 3)
-    FROM ExtractedIDs;
+            @new_user_id = 'SV' + RIGHT('000' + CAST(ISNULL(MAX(stt), 0) + 1 AS VARCHAR), 3)
+        FROM ExtractedIDs;
 
-    -- Thêm vào bảng USER
-    INSERT INTO [USER] (user_id, user_mail, mat_khau, ho_ten, gioi_tinh, ngay_sinh, email, so_dien_thoai, dia_chi, khoa_id)
-    VALUES (@new_user_id, @user_mail, @mat_khau, @ho_ten, @gioi_tinh, @ngay_sinh, @email, @so_dien_thoai, @dia_chi, @khoa_id);
-    
-    -- Thêm vào bảng SINH_VIEN
-    INSERT INTO SINH_VIEN (ma_sinh_vien)
-    VALUES (@new_user_id);
+        -- Thêm vào bảng USER
+        INSERT INTO [USER] (user_id, user_mail, mat_khau, ho_ten, gioi_tinh, ngay_sinh, email, so_dien_thoai, dia_chi, khoa_id)
+        VALUES (@new_user_id, @user_mail, @mat_khau, @ho_ten, @gioi_tinh, @ngay_sinh, @email, @so_dien_thoai, @dia_chi, @khoa_id);
+        
+        -- Thêm vào bảng SINH_VIEN
+        INSERT INTO SINH_VIEN (ma_sinh_vien)
+        VALUES (@new_user_id);
+
+        -- Trả về 0 nếu thành công
+        RETURN 0;
+
+    END TRY
+    BEGIN CATCH
+        -- Bắt lỗi và trả về mã lỗi
+        RETURN ERROR_NUMBER(); -- Trả về mã lỗi SQL Server
+    END CATCH
 END;
 GO
 
@@ -409,18 +383,17 @@ CREATE PROCEDURE ThemTaiNguyenVaoLop
     @url NVARCHAR(2083)
 AS
 BEGIN
-    -- Kiểm tra nếu tài nguyên đã tồn tại trong lớp học
-    IF EXISTS (SELECT 1 FROM TAI_NGUYEN_LOP_HOC WHERE lop_id = @lop_id AND ten_tai_nguyen = @ten_tai_nguyen)
-    BEGIN
-        -- Ném lỗi nếu tài nguyên đã tồn tại
-        THROW 50000, 'Tài nguyên đã tồn tại trong lớp học này!', 1;
-    END
-    ELSE
-    BEGIN
-        -- Thêm tài nguyên mới vào lớp học
-        INSERT INTO TAI_NGUYEN_LOP_HOC (lop_id, ten_tai_nguyen, url)
-        VALUES (@lop_id, @ten_tai_nguyen, @url);
-    END
+    BEGIN TRY
+        BEGIN
+            -- Thêm tài nguyên mới vào lớp học
+            INSERT INTO TAI_NGUYEN_LOP_HOC (lop_id, ten_tai_nguyen, url)
+            VALUES (@lop_id, @ten_tai_nguyen, @url);
+        END
+    END TRY
+    BEGIN CATCH
+        -- Bắt lỗi và trả về mã lỗi cùng thông điệp lỗi
+        RETURN ERROR_NUMBER();
+    END CATCH
 END;
 
 -- Thêm Dữ Liệu ----------------------------------------------------------------------------------------------------------------
