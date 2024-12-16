@@ -24,10 +24,10 @@ export async function CheckLogin(data) {
               dia_chi: user.dia_chi,
               khoa_id: user.khoa_id,
               role: user.user_id.startsWith('GV')
-                        ? 'Teacher' // Giáo viên
+                        ? 'teacher' // Giáo viên
                         : user.user_id.startsWith('SV')
-                        ? 'Student' // Sinh viên
-                        : 'Unknown'
+                        ? 'student' // Sinh viên
+                        : 'unknown'
             }
           };
         } else {
