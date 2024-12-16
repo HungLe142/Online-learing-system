@@ -1,8 +1,10 @@
 import express from 'express';
 const app = express();
 const port = 3001;
-app.use(express.json());
+import cors from 'cors';
 
+app.use(cors());
+app.use(express.json());
 //Khai báo các route
 import adminRoute from './routes/AdminRoute.js';
 import lecturerRoute from './routes/LecturerRoute.js';
@@ -11,6 +13,7 @@ import classRoute from './routes/ClassRoute.js';
 import userRoute from './routes/UserRoute.js';
 
 //Dẫn qua các route
+app.use(cors());
 app.use('/admin', adminRoute);
 app.use('/lecturer', lecturerRoute);
 app.use('/student', studentRoute);
