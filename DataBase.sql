@@ -451,24 +451,24 @@ ALTER TABLE KHOA CHECK CONSTRAINT ALL;
 
 INSERT INTO [USER] (user_id,user_mail, mat_khau, ho_ten, gioi_tinh, ngay_sinh, email, so_dien_thoai, dia_chi, khoa_id) 
 VALUES
-('GV001','huy.daoitman@hcmut.edu.vn', '04112004', N'Đào Hữu Gia Huy', 'Male', '24-11-2004', 'huy.daoitman@gmail.com', '0792051596', '120/122 Thích Quảng Đức', 'CS'),
-('GV002','nguyen.thanh@hcmut.edu.vn', '01011999', N'Nguyễn Thanh', 'Male', '01-01-1999', 'nguyen.thanh@gmail.com', '0901234567', '58/7 Nguyễn Văn Cừ', 'CS'),
-('GV003','trang.kim@hcmut.edu.vn', '02022000', N'Trần Kim Trang', 'Female', '02-02-2000', 'trang.kim@gmail.com', '0912345678', '12 Đoàn Văn Bơ', 'CE'),
-('GV004','le.hong@hcmut.edu.vn', '03031998', N'Lê Hồng Quân', 'Male', '03-03-1998', 'le.hong@gmail.com', '0932134567', '15 Phan Đình Phùng', 'CE'),
-('GV005','mai.thu@hcmut.edu.vn', '04042002', N'Mai Thu Hương', 'Female', '04-04-2002', 'mai.thu@gmail.com', '0945678901', '77 Hoàng Văn Thụ', 'ES'),
-('GV006','pham.quyen@hcmut.edu.vn', '05112001', N'Phạm Quỳnh Anh', 'Female', '05-11-2001', 'pham.quyen@gmail.com', '0987654321', '22 Lý Thường Kiệt', 'ES'),
-('GV007','vannam.tan@hcmut.edu.vn', '06121997', N'Văn Nam Tân', 'Male', '06-12-1997', 'vannam.tan@gmail.com', '0976543210', '88 Nguyễn Trãi', 'ME'),
-('GV008','hoang.mai@hcmut.edu.vn', '07051996', N'Hoàng Mai Lan', 'Female', '07-05-1996', 'hoang.mai@gmail.com', '0998765432', '34 Trần Hưng Đạo', 'CHE'),
-('SV001','minh.quoc@hcmut.edu.vn', '08082003', N'Nguyễn Minh Quốc', 'Male', '08-08-2003', 'minh.quoc@gmail.com', '0982345678', '99 Lê Quang Định', 'CS'),
-('SV002','quyen.thi@hcmut.edu.vn', '09091997', N'Trần Thị Quyên', 'Female', '09-09-1997', 'quyen.thi@gmail.com', '0918765432', '56 Nguyễn Hữu Cảnh', 'CS'),
-('SV003','lan.bich@hcmut.edu.vn', '10102002', N'Lâm Bích Ngọc', 'Female', '10-10-2002', 'lan.bich@gmail.com', '0933456789', '21 Hàm Nghi', 'CE'),
-('SV004','tu.quang@hcmut.edu.vn', '11111999', N'Ngô Quang Tuấn', 'Male', '11-11-1999', 'tu.quang@gmail.com', '0912345670', '101 Trần Phú', 'CE'),
-('SV005','anh.duc@hcmut.edu.vn', '12122000', N'Phan Anh Đức', 'Male', '12-12-2000', 'anh.duc@gmail.com', '0987456123', '54 Lý Tự Trọng', 'ES'),
-('SV006','thao.nam@hcmut.edu.vn', '13132004', N'Nguyễn Thảo Nam', 'Female', '13-01-2004', 'thao.nam@gmail.com', '0976543212', '43 Phạm Ngọc Thạch', 'ES'),
-('SV007','chung.tri@hcmut.edu.vn', '14142001', N'Lê Chung Triều', 'Male', '14-04-2001', 'chung.tri@gmail.com', '0943322110', '65 Đường 3/2', 'ME'),
-('SV008','hien.hoa@hcmut.edu.vn', '15152002', N'Lê Hien Hoa', 'Female', '15-05-2002', 'hien.hoa@gmail.com', '0968776543', '10 Trường Sơn', 'ME'),
-('SV009','bao.duong@hcmut.edu.vn', '16162000', N'Dương Bảo Quang', 'Male', '16-06-2000', 'bao.duong@gmail.com', '0934765321', '44 Võ Thị Sáu', 'CHE'),
-('SV010','tuan.an@hcmut.edu.vn', '17172004', N'Nguyễn Tuấn Anh', 'Male', '17-07-2004', 'tuan.an@gmail.com', '0977654320', '120 Trần Đại Nghĩa', 'CHE');
+('GV001','huy.daoitman@hcmut.edu.vn', '04112004', N'Đào Hữu Gia Huy', 'Male', '24-11-2004', 'huy.daoitman@gmail.com', '0792051596', N'120/122 Thích Quảng Đức', 'CS'),
+('GV002','nguyen.thanh@hcmut.edu.vn', '01011999', N'Nguyễn Thanh', 'Male', '01-01-1999', 'nguyen.thanh@gmail.com', '0901234567', N'58/7 Nguyễn Văn Cừ', 'CS'),
+('GV003','trang.kim@hcmut.edu.vn', '02022000', N'Trần Kim Trang', 'Female', '02-02-2000', 'trang.kim@gmail.com', '0912345678', N'12 Đoàn Văn Bơ', 'CE'),
+('GV004','le.hong@hcmut.edu.vn', '03031998', N'Lê Hồng Quân', 'Male', '03-03-1998', 'le.hong@gmail.com', '0932134567', N'15 Phan Đình Phùng', 'CE'),
+('GV005','mai.thu@hcmut.edu.vn', '04042002', N'Mai Thu Hương', 'Female', '04-04-2002', 'mai.thu@gmail.com', '0945678901', N'77 Hoàng Văn Thụ', 'ES'),
+('GV006','pham.quyen@hcmut.edu.vn', '05112001', N'Phạm Quỳnh Anh', 'Female', '05-11-2001', 'pham.quyen@gmail.com', '0987654321', N'22 Lý Thường Kiệt', 'ES'),
+('GV007','vannam.tan@hcmut.edu.vn', '06121997', N'Văn Nam Tân', 'Male', '06-12-1997', 'vannam.tan@gmail.com', '0976543210', N'88 Nguyễn Trãi', 'ME'),
+('GV008','hoang.mai@hcmut.edu.vn', '07051996', N'Hoàng Mai Lan', 'Female', '07-05-1996', 'hoang.mai@gmail.com', '0998765432', N'34 Trần Hưng Đạo', 'CHE'),
+('SV001','minh.quoc@hcmut.edu.vn', '08082003', N'Nguyễn Minh Quốc', 'Male', '08-08-2003', 'minh.quoc@gmail.com', '0982345678', N'99 Lê Quang Định', 'CS'),
+('SV002','quyen.thi@hcmut.edu.vn', '09091997', N'Trần Thị Quyên', 'Female', '09-09-1997', 'quyen.thi@gmail.com', '0918765432', N'56 Nguyễn Hữu Cảnh', 'CS'),
+('SV003','lan.bich@hcmut.edu.vn', '10102002', N'Lâm Bích Ngọc', 'Female', '10-10-2002', 'lan.bich@gmail.com', '0933456789', N'21 Hàm Nghi', 'CE'),
+('SV004','tu.quang@hcmut.edu.vn', '11111999', N'Ngô Quang Tuấn', 'Male', '11-11-1999', 'tu.quang@gmail.com', '0912345670', N'101 Trần Phú', 'CE'),
+('SV005','anh.duc@hcmut.edu.vn', '12122000', N'Phan Anh Đức', 'Male', '12-12-2000', 'anh.duc@gmail.com', '0987456123', N'54 Lý Tự Trọng', 'ES'),
+('SV006','thao.nam@hcmut.edu.vn', '13132004', N'Nguyễn Thảo Nam', 'Female', '13-01-2004', 'thao.nam@gmail.com', '0976543212', N'43 Phạm Ngọc Thạch', 'ES'),
+('SV007','chung.tri@hcmut.edu.vn', '14142001', N'Lê Chung Triều', 'Male', '14-04-2001', 'chung.tri@gmail.com', '0943322110', N'65 Đường 3/2', 'ME'),
+('SV008','hien.hoa@hcmut.edu.vn', '15152002', N'Lê Hien Hoa', 'Female', '15-05-2002', 'hien.hoa@gmail.com', '0968776543', N'10 Trường Sơn', 'ME'),
+('SV009','bao.duong@hcmut.edu.vn', '16162000', N'Dương Bảo Quang', 'Male', '16-06-2000', 'bao.duong@gmail.com', '0934765321', N'44 Võ Thị Sáu', 'CHE'),
+('SV010','tuan.an@hcmut.edu.vn', '17172004', N'Nguyễn Tuấn Anh', 'Male', '17-07-2004', 'tuan.an@gmail.com', '0977654320', N'120 Trần Đại Nghĩa', 'CHE');
 
 INSERT INTO GIANG_VIEN (ma_giang_vien, hoc_vi, chuyen_nganh) 
 VALUES

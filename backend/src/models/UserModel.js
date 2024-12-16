@@ -22,7 +22,12 @@ export async function CheckLogin(data) {
               ngay_sinh: user.ngay_sinh,
               gioi_tinh: user.gioi_tinh,
               dia_chi: user.dia_chi,
-              khoa_id: user.khoa_id
+              khoa_id: user.khoa_id,
+              role: user.user_id.startsWith('GV')
+                        ? 'Teacher' // Giáo viên
+                        : user.user_id.startsWith('SV')
+                        ? 'Student' // Sinh viên
+                        : 'Unknown'
             }
           };
         } else {
