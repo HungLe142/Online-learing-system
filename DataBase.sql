@@ -512,7 +512,6 @@ VALUES
 ('ES001_1', 'A1-105', 6, 5, 9),
 ('ES001_2', 'A1-106', 7, 6, 10),
 ('ME001_1', 'A1-107', 1, 7, 11),
-('XH123_1', 'A1-108', 2, 8, 12),
 ('CHE002_1', 'A1-109', 7, 9, 13);
 
 INSERT INTO TAI_NGUYEN_LOP_HOC (lop_id, ten_tai_nguyen, url)
