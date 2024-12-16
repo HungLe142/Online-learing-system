@@ -4,15 +4,17 @@ import ContentCard from "../components/ContentCard";
 import { Link } from "react-router-dom";
 import { ENDPOINTS } from "../../../routes/endPoints";
 import  icons_back from "../../../assets/icons/icon_back.png";
-const lessons = [
+//import courseDataProcess from "../services/course_data_process";
+
+const lessons = [ // classes
   { title: "Lesson 01 : Introduction about XD", duration: "30 mins", bgColor: "bg-teal-400" },
   { title: "Lesson 02: Introduction about XD", duration: "30 mins", bgColor: "bg-amber-500 bg-opacity-30" },
   { title: "Lesson 03 : Introduction about XD", duration: "30 mins", bgColor: "bg-blue-300 bg-opacity-30" },
   { title: "Lesson 04 : Introduction about XD", duration: "30 mins", bgColor: "bg-red-400 bg-opacity-30" }
 ];
 
-const exercises = [
-  { title: "Lesson 01 : Introduction about XD", duration: "30 mins", bgColor: "bg-blue-300 bg-opacity-30" },
+const exercises = [ // materials in a class
+  { title: "Lesson 00001 : Introduction about XD", duration: "30 mins", bgColor: "bg-blue-300 bg-opacity-30" },
   { title: "Lesson 01 : Introduction about XD", duration: "30 mins", bgColor: "bg-amber-500 bg-opacity-30" },
 ];
 
@@ -40,17 +42,12 @@ export default function CourseContent() {
               Tên diễn đàn
             </div>
             <div className="self-start mt-5 text-3xl font-semibold text-slate-800 max-md:ml-2.5">
-              Lesson
+              Class
             </div>
             {lessons.map((lesson, index) => (
               <LessonCard key={index} {...lesson} />
             ))}
-            <div className="self-start mt-5 text-3xl font-semibold text-slate-800 max-md:ml-2.5">
-              EXERCISE
-            </div>
-            {exercises.map((exercise, index) => (
-              <LessonCard key={index} {...exercise} />
-            ))}
+
           </div>
         </div>
         <div className="flex flex-col ml-5 w-[76%] max-md:ml-0 max-md:w-full">
@@ -65,9 +62,6 @@ export default function CourseContent() {
               </div>
             </div>
             <div className="flex flex-col items-start px-3.5 pt-9 pb-16 mt-3.5 w-full bg-blue-300 bg-blend-normal max-md:mr-1.5 max-md:max-w-full">
-              <div className="ml-12 text-3xl text-black max-md:max-w-full">
-                Lesson 01 : Introduction about XD
-              </div>
               <div className="self-stretch mt-7 ml-5 max-md:max-w-full">
                 <div className="flex gap-5 max-md:flex-col">
                   {[1, 2, 3, 4].map((index) => (
@@ -77,20 +71,11 @@ export default function CourseContent() {
                   ))}
                 </div>
               </div>
-              <div className="mt-9 ml-12 text-3xl text-black max-md:max-w-full">
-                Lesson 02 : Introduction about XD
-              </div>
-              <div className="self-stretch mt-5 ml-3.5 max-md:mr-1 max-md:max-w-full">
-                <div className="flex gap-5 max-md:flex-col">
-                  {[1, 2, 3, 4].map((index) => (
-                    <div key={index} className="flex flex-col w-3/12 max-md:ml-0 max-md:w-full">
-                      <ContentCard {...contentCards[0]} />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              
+              
+              
               <div className="mt-12 ml-9 text-3xl text-black max-md:mt-10 max-md:ml-2.5">
-                Exercise 01
+                Exercise 02221
               </div>
               <div className="mt-5 max-w-full w-[662px]">
                 <div className="flex gap-5 max-md:flex-col">
