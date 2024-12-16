@@ -2,10 +2,12 @@ import axios from 'axios';
 import APIEndPoint from "../constants/apiEndpoints";
 
 export const getClasses = async (studentId) => {
+    let semesterId = 'HK241'
     const serverUrl = APIEndPoint.SERVER_URL;
     try {
-    console.log(`${serverUrl}/student/${studentId}/classes`)
-    const response = await axios.get(`${serverUrl}/student/${studentId}/classes`);
+    const url = `${serverUrl}/student/GetStudentClassInfo?studentID=${studentId}&semesterID=${semesterId}`;
+    console.log(url);
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     console.error('Error fetching classes:', error);
