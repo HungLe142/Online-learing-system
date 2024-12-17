@@ -49,10 +49,24 @@ export async function fetch_user_info(user_id) {
         // Kết nối tới database
         pool = await connectToDb();
 
-        // Thực hiện truy vấn lấy thông tin user theo user_id
+        let query = '';
+        if (user_id.startsWith('GV')) {
+            // Nếu user_id bắt đầu bằng 'GV', thực hiện join bảng USER và GIANG_VIEN
+            query = `
+                SELECT u.*, gv.hoc_vi, gv.chuyen_nganh
+                FROM [USER] u
+                JOIN GIANG_VIEN gv ON u.user_id = gv.ma_giang_vien
+                WHERE u.user_id = @user_id
+            `;
+        } else {
+            // Nếu user_id không bắt đầu bằng 'GV', chỉ lấy dữ liệu từ bảng USER
+            query = 'SELECT * FROM [USER] WHERE user_id = @user_id';
+        }
+
+        // Thực hiện truy vấn lấy thông tin user
         const result = await pool.request()
             .input('user_id', sql.VarChar(20), user_id)
-            .query('SELECT * FROM [USER] WHERE user_id = @user_id');
+            .query(query);
 
         // Kiểm tra kết quả và trả về thông tin user
         if (result.recordset.length > 0) {
