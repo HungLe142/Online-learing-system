@@ -19,3 +19,19 @@ export const getClasses = async (studentId, token) => {
     }
 };
 
+export const getInfo = async (user_id, token) => {
+    const serverUrl = APIEndPoint.SERVER_URL; // 'http://localhost:3001'
+    try {
+        const url = `${serverUrl}/user/info/${user_id}`;
+        console.log(url);
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        throw error;
+    }
+};

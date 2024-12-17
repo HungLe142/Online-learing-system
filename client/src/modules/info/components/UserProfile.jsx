@@ -1,15 +1,41 @@
 import * as React from "react";
 import { InputField } from "./InputField";
 import { PersonalInfo } from "./PersonalInfo";
+import get_user_info from "../services/info_data_process";
+
+import { useState, useEffect } from 'react';
+
+import { useSelector } from 'react-redux';
+import { useAuth } from '../../../hooks/useAuth';
+
+
 
 function UserProfile() {
-  const personalInfo = {
-    name: "Nguyễn Văn A",
-    birthDate: "September 24, 2017",
-    phoneNumber: "0123456789",
-    location: "2118 Thornridge Cir, Syracuse, Connecticut 35624",
-    email: "jessica.hansome@example.com"
-  };
+/********************* Fix here !***************************/
+// const {user, token} = useAuth();
+// const  user_id = user.user_id;
+  let user_id = 'SV001';
+  let token = 'your_token_here';
+/********************* Fix here !***************************/
+
+  const [personalInfo, setPersonalInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const info = await get_user_info(user_id, token);
+        setPersonalInfo(info);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, [user_id, token]);
+
+  if (!personalInfo) {
+    return <div>Loading...</div>; // Hiển thị trạng thái loading khi dữ liệu chưa được trả về
+  }
 
   return (
     <form className="flex flex-col text-lg font-semibold rounded-none text-zinc-600 ">
@@ -36,7 +62,6 @@ function UserProfile() {
           value={personalInfo.email}
           id="email"
           type="email"
-          centerAligned
         />
       </div>
     </form>

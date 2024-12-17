@@ -4,6 +4,8 @@ import UserProfile from "../components/UserProfile";
 import { Link } from "react-router-dom";
 import { ENDPOINTS } from "../../../routes/endPoints";
 import  icons_back from "../../../assets/icons/icon_back.png";
+
+
 function InformationPage() {
   return (
     <div className="flex overflow-hidden flex-col bg-white max-md:pl-5">
