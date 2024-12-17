@@ -1,11 +1,24 @@
 import { CheckLogin, fetch_user_info } from "../models/UserModel.js"
+import jwt from 'jsonwebtoken';
+const SECRET_KEY = 'your_secret_key';
+
 export async function login(req, res) {
     try {
       const result  = await CheckLogin(req.body);
-      
+    
       if (result.success) {
+        const user = result.data;
+        const token = jwt.sign(
+          {
+            user_id: user.user_id,
+            role: user.role, // Đưa role vào payload để kiểm tra sau này
+          },
+          SECRET_KEY,
+          { expiresIn: '1h' } // Token hết hạn sau 1 giờ
+        );
+
         return res.status(200).json({
-          token: "hehe",
+          token: token,
           user: result.data
         });
       } else {

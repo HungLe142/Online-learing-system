@@ -2,9 +2,12 @@ import express from 'express';
 const app = express();
 const port = 3001;
 import cors from 'cors';
+import { authenticateToken, } from './middleware/authtication.js'
 
 app.use(cors());
 app.use(express.json());
+app.use(authenticateToken);
+
 //Khai báo các route
 import adminRoute from './routes/AdminRoute.js';
 import lecturerRoute from './routes/LecturerRoute.js';
