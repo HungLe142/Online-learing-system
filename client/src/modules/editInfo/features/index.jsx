@@ -12,7 +12,7 @@ function EditInformationPage() {
               <img src={icons_back} alt="" className="h-10 w-10"/>
             </Link>
         <div className="px-16 pt-7 pb-16  max-md:px-5 max-md:max-w-full">
-          EditInformation
+          Edit Information
         </div>
       </div>
       <div className="max-md:max-w-full">
