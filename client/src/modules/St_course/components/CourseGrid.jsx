@@ -2,15 +2,24 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import CourseCard from "./CourseCard";
 import courseDataProcess from "../services/course_data_process";
+import { useSelector } from 'react-redux';
 
-function CourseGrid({ studentId }) {
+function CourseGrid() {
   const [courseData, setCourseData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+/********************* Fix here !***************************/
+  //const user = useSelector(state => state.auth.user);
+  //const token = useSelector(state => state.auth.token);
+  
+  let studentId = 'SV001';
+  let token = null;
+
+/********************* Fix here !***************************/
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await courseDataProcess(studentId);
+        const data = await courseDataProcess(studentId, token);
         setCourseData(data);
       } catch (error) {
         console.error('Error fetching course data:', error);

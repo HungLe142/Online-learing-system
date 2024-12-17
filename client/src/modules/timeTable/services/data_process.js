@@ -25,15 +25,17 @@ const dayMapping = {
   1: 'sunday',
 };
 
-const time_table_process = async (studentId, lecturerId) => {
+const time_table_process = async (studentId, lecturerId, token) => {
   try {
-    // Gọi API để lấy dữ liệu
-    const apiData = await getTimeTable(studentId, lecturerId);
-    console.log("API Data: ", apiData)
+    // Gọi API để lấy dữ liệu, bao gồm header chứa token
+    const apiData = await getTimeTable(studentId, lecturerId, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log("API Data: ", apiData);
+
     // Kiểm tra dữ liệu trả về từ API
-    // if (!Array.isArray(apiData)) {
-    //   throw new TypeError('Expected apiData to be an array');
-    // }
     const courses = apiData.message;  // Chỉ cần lấy apiData vì getTimeTable đã trả về data
 
     // Khởi tạo cấu trúc dữ liệu ban đầu

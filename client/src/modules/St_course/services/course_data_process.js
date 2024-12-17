@@ -1,9 +1,9 @@
 import { getClasses } from '../../../hooks/useStudent';
 
-const courseDataProcess = async (studentId) => {
+const courseDataProcess = async (studentId, token) => {
   try {
     // Gọi API để lấy dữ liệu
-    const apiData = await getClasses(studentId);
+    const apiData = await getClasses(studentId, token);
 
     // Kiểm tra dữ liệu trả về từ API
     console.log('API Data:', apiData);

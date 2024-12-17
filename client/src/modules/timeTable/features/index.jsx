@@ -323,20 +323,22 @@ import { useSelector } from 'react-redux';
 
 function Timetable() {
 
-  const user = useSelector(state => state.auth.user);
-
+/********************* Fix here !***************************/
+  //const user = useSelector(state => state.auth.user);
+  //const token = useSelector(state => state.auth.token);
   // let studentId = null;
   // let lecturerId = null;
+  
   let studentId = 'SV001';
   let lecturerId = null;
+  let token = null
 
-  // Fix here !
   // if(user.role == 'teacher')
-  //   lecturerId = setCredentials.user.user_id
+  //   lecturerId = user.user_id
   // else if(user.role == 'student')
-  //   studentId = setCredentials.user.user_id
+  //   studentId = user.user_id
   
-  
+/********************* Fix here !***************************/
 
   
   const [scheduleData, setScheduleData] = useState({});
@@ -374,7 +376,7 @@ function Timetable() {
   useEffect(() => {
     const fetchScheduleData = async () => {
       try {
-        const timetable = await time_table_process(studentId, lecturerId); 
+        const timetable = await time_table_process(studentId, lecturerId, token); 
         setScheduleData(timetable); // Cập nhật state với dữ liệu lịch trình
         console.log('Time table data: ', timetable);
       } catch (error) { 
