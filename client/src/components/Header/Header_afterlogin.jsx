@@ -119,7 +119,9 @@ import React, { useState } from "react";
 import { Link, useMatch } from "react-router-dom";
 import { ENDPOINTS } from "../../routes/endPoints";
 import UserPanel from "../userPanel/UserPanel";
+import { useAuth } from "../../hooks/useAuth";
 function HeaderAuthed() {
+  const {user}= useAuth();
   const [isUserPanelVisible, setUserPanelVisible] = useState(false);
   const toggleUserPanel = () => {
     setUserPanelVisible((prev) => !prev);
@@ -135,6 +137,22 @@ function HeaderAuthed() {
         />
         <div className="flex flex-wrap gap-10 my-auto max-md:max-w-full">
           <nav className="flex flex-auto gap-10 my-auto text-2xl tracking-wide text-zinc-600 max-md:max-w-full">
+            {/* <Link   to={user.role === 'student' ? ENDPOINTS.USER.HOME : ENDPOINTS.TEACHER.HOME} className="basis-auto hover:text-zinc-800">
+                  Home
+                </Link> 
+                <Link to={user.role === 'student' ? ENDPOINTS.USER.INFO : ENDPOINTS.TEACHER.INFO} className="basis-auto hover:text-zinc-800"
+                    >
+                      Information
+                    </Link>
+
+                    <Link to={user.role === 'student' ? ENDPOINTS.USER.TIMETABLE : ENDPOINTS.TEACHER.TIMETABLE} className="basis-auto hover:text-zinc-800">
+                      Timetable
+                    </Link>
+
+                    <Link to={user.role === 'student' ? ENDPOINTS.USER.REGISTER_COURSE : ENDPOINTS.TEACHER.REGISTER_COURSE} className="basis-auto hover:text-zinc-800">
+                      Register course
+                    </Link>
+            */}
             <Link to={ENDPOINTS.USER.HOME} className="hover:text-zinc-800">Home</Link>
             <Link to={ENDPOINTS.USER.INFO} className="basis-auto hover:text-zinc-800">Information</Link>
             <Link to={ENDPOINTS.USER.TIMETABLE} className="basis-auto hover:text-zinc-800">Timetable</Link>

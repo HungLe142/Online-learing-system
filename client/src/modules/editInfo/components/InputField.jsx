@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export function InputField({ label, value, id, type = "text", centerAligned }) {
+export function InputField({ label, value, id, type = "text", centerAligned, onChange }) {
   return (
     <>
       <label 
@@ -20,6 +20,7 @@ export function InputField({ label, value, id, type = "text", centerAligned }) {
           type={type}
           id={id}
           value={value}
+          onChange={onChange}
           className="w-full bg-transparent border-none outline-none"
           aria-label={label}
         />

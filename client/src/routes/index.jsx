@@ -14,6 +14,7 @@ import Loading from "../components/Loading";
 import DefaultLayout from "../layouts/DefaultLayout";
 import { ENDPOINTS } from "./endPoints";
 import LandingLayout from "../layouts/LandingLayout";
+import AdminLayout from "../layouts/AdminLayOut";
 
 const WEB_NAME = "WePress App";
 
@@ -114,11 +115,48 @@ const registerCoursePage = {
   Layout: DefaultLayout,
 }
 //trang cua teacher
+const TchomePage = {
+  path: ENDPOINTS.TEACHER.HOME,
+  component: lazy(() => delayRoute()(import("../modules/St_course/features/index"))),
+  title: `Home | ${WEB_NAME}`,
+  Layout: DefaultLayout,
+};
 const teacherContentCoursePage = {
   path: ENDPOINTS.TEACHER.COURSE_CONTENT,
   component: lazy(() => delayRoute()(import("../modules/T_courseContent/features/index"))),
   title: `Course Content | ${WEB_NAME}`,
   Layout: DefaultLayout,
+}
+const InfoTeacherPage = {
+  path: ENDPOINTS.TEACHER.INFO,
+  component: lazy(() => delayRoute()(import("../modules/info/features/index"))),
+  title: `Info | ${WEB_NAME}`,
+  Layout: DefaultLayout,
+}
+const TcforumPage = {
+  path: ENDPOINTS.TEACHER.FORUM,
+  component: lazy(() => delayRoute()(import("../modules/forum/features/index"))),
+  title: `Forum | ${WEB_NAME}`,
+  Layout: DefaultLayout,
+}
+const TctimetablePage = {
+  path: ENDPOINTS.TEACHER.TIMETABLE,
+  component: lazy(() => delayRoute()(import("../modules/timeTable/features/index"))),
+  title: `Timetable | ${WEB_NAME}`,
+  Layout: DefaultLayout,
+};
+const GradeEntryPage = {
+  path: ENDPOINTS.TEACHER.GRADE_ENTRY,
+  component: lazy(() => delayRoute()(import("../modules/GradeEntryPage/features/index"))),
+  title: `Grade Entry | ${WEB_NAME}`,
+  Layout: DefaultLayout,
+}
+//trang admin
+const admin_create_course = {
+  path: ENDPOINTS.ADMIN.CREATE_COURSE,
+  component: lazy(() => delayRoute()(import("../modules/admin_createCourse/features/index"))),
+  title: `Admin Home | ${WEB_NAME}`,
+  Layout: AdminLayout,
 }
 export const privateRouteData = [];
 export const publicRoutesData = [
@@ -133,7 +171,13 @@ export const publicRoutesData = [
   forumPage,
   scoreboardPage,
   registerCoursePage,
-  teacherContentCoursePage
+  teacherContentCoursePage,
+  admin_create_course,
+  InfoTeacherPage,
+  TcforumPage,
+  TchomePage,
+  TctimetablePage,
+  GradeEntryPage
 ];
 
 // Improved route rendering function

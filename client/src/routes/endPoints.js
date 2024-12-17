@@ -15,18 +15,19 @@ export const ENDPOINTS = Object.freeze({
         SCOREBOARD: "/user/scoreboard"
     },
     TEACHER: {
-        HOME: "/user/home",
-        INFO: "/user/info",
-        TIMETABLE: "/user/timetable",
+        HOME: "/teacher/home",
+        INFO: "/teacher/info",
+        TIMETABLE: "/teacher/timetable",
         COURSE_CONTENT: "/teacher/course-content/:id",
         EDIT_INFO: "/teacher/edit-info",
         FORUM: "/teacher/forum/:id",
+        GRADE_ENTRY: "/enter-grades/:id",
     },
     ADMIN: {
         HOME: "/admin/home",
         INFO: "/admin/info",
         TIMETABLE: "/admin/timetable",
-        REGISTER_COURSE: "/admin/register-course",
+        CREATE_COURSE: "/admin/create-course",
         COURSE_CONTENT: "/admin/course-content/:id",
         EDIT_INFO: "/admin/edit-info",
         FORUM: "/admin/forum/:id",
