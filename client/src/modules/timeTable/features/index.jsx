@@ -320,8 +320,12 @@ import { Link } from 'react-router-dom';
 import { ENDPOINTS } from '../../../routes/endPoints';
 import time_table_process from "../services/data_process";
 import { useSelector } from 'react-redux';
-
+// import { useAuth } from '../../../hooks/useAuth';
 function Timetable() {
+//  const {user, token} = useAuth();
+// const  studentId = user.user_id;
+// const  lecturerId = user.user_id;
+// const role = user.role;
 
 /********************* Fix here !***************************/
   //const user = useSelector(state => state.auth.user);

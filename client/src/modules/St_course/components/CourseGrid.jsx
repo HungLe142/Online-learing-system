@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import CourseCard from "./CourseCard";
 import courseDataProcess from "../services/course_data_process";
 import { useSelector } from 'react-redux';
-
+import { useAuth } from "../../../hooks/useAuth";
 function CourseGrid() {
   const [courseData, setCourseData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ function CourseGrid() {
 /********************* Fix here !***************************/
   //const user = useSelector(state => state.auth.user);
   //const token = useSelector(state => state.auth.token);
-  
+  //const {user} = useAuth();
   let studentId = 'SV001';
   let token = null;
 
