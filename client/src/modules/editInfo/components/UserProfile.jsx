@@ -86,14 +86,6 @@ function UserProfile() {
           onChange={handleInputChange}
         />
 
-        <InputField 
-          label="Email"
-          value={userInfo.email}
-          id="email"
-          type="email"
-          onChange={handleInputChange}
-        />
-
         <button 
           type="submit" 
           className="mt-6 px-6 py-2 rounded-lg bg-blue-500 text-white"
