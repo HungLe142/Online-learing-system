@@ -43,3 +43,33 @@ export async function CheckLogin(data) {
     }
 }
 
+export async function fetch_user_info(user_id) {
+    let pool;
+    try {
+        // Kết nối tới database
+        pool = await connectToDb();
+
+        // Thực hiện truy vấn lấy thông tin user theo user_id
+        const result = await pool.request()
+            .input('user_id', sql.VarChar(20), user_id)
+            .query('SELECT * FROM [USER] WHERE user_id = @user_id');
+
+        // Kiểm tra kết quả và trả về thông tin user
+        if (result.recordset.length > 0) {
+            return result.recordset[0];
+        } else {
+            throw new Error('User không tồn tại');
+        }
+    } catch (err) {
+        console.error('Lỗi truy vấn dữ liệu:', err);
+        throw err;
+    } finally {
+        // Đóng kết nối khi không còn sử dụng
+        if (pool) {
+            pool.close();
+        }
+    }
+}
+
+
+
