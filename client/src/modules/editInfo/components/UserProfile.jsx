@@ -1,15 +1,49 @@
 import * as React from "react";
+import { useEffect, useState } from 'react';
 import { InputField } from "./InputField";
 import { PersonalInfo } from "./PersonalInfo";
+import { change_user_info, Get_user_info, createUserObject, mm_dd_to_yy_mm } from "../services/data_ope";
+
+import { useSelector } from 'react-redux';
+import { useAuth } from '../../../hooks/useAuth';
 
 function UserProfile() {
-  const [userInfo, setUserInfo] = React.useState({
-    name: "Adobe XD Auto - Animate : Your Guide to Creating",
-    location: "2118 Thornridge Cir, Syracuse, Connecticut 35624",
-    email: "jessica.hansome@example.com",
-    birthDate: "September 24, 2017",
-    phoneNumber: "0123456789"
+
+/********************* Fix here !***************************/
+  // const {user, token} = useAuth();
+  // const  user_id = user.user_id;
+  
+  let userId = 'SV001';
+  let token = 'your_token_here';
+/********************* Fix here !***************************/
+
+  const [userInfo, setUserInfo] = useState({
+    name: '',
+    location: '',
+    email: '',
+    birthDate: '',
+    phoneNumber: ''
   });
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const data = await Get_user_info(userId, token);
+        setUserInfo({
+          name: data.name,
+          location: data.location,
+          email: data.email,
+          //birthDate: new Date(data.birthDate).toLocaleDateString(),
+          birthDate: data.birthDate,
+          phoneNumber: data.phoneNumber
+        });
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, [userId, token]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -21,8 +55,9 @@ function UserProfile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("User info submitted:", userInfo);
-    // Process form submission here (e.g., send data to an API)
+    // Process form submission here (e.g., send data to an API)\
+    const user = createUserObject(userId, userInfo);
+    change_user_info(user, token);
   };
 
   return (
@@ -56,7 +91,6 @@ function UserProfile() {
           value={userInfo.email}
           id="email"
           type="email"
-          centerAligned
           onChange={handleInputChange}
         />
 
