@@ -1,4 +1,9 @@
-import { getInfo } from '../../../hooks/useStudent';
+import { getInfo } from '../../../hooks/useUser';
+
+const formatDate = (dateString) => { 
+  const date = new Date(dateString); 
+  return date.toISOString().split('T')[0]; // Chỉ lấy phần ngày trước 'T' 
+};
 
 const get_user_info = async (user_ID, token) => {
   try {
@@ -11,7 +16,7 @@ const get_user_info = async (user_ID, token) => {
     // Xử lý dữ liệu trả về
     const personalInfo = {
       name: apiData.ho_ten,
-      birthDate: new Date(apiData.ngay_sinh).toLocaleDateString(),
+      birthDate: formatDate(apiData.ngay_sinh),
       phoneNumber: apiData.so_dien_thoai,
       location: apiData.dia_chi,
       email: apiData.email || apiData.user_mail
