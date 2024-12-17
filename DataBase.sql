@@ -232,24 +232,44 @@ RETURN
 );
 GO
 
-CREATE FUNCTION XemDiem
+CREATE FUNCTION LayDiemSinhVien
 (
-    @lop_id VARCHAR(20),
-    @ma_sinh_vien VARCHAR(20)
+    @ma_sinh_vien VARCHAR(20),  -- Mã sinh viên
+    @hoc_ky VARCHAR(20)         -- Học kỳ
 )
 RETURNS TABLE
 AS
 RETURN
 (
-    SELECT
-        lop_id AS classID,
-        ma_sinh_vien AS studentID,
-        diem_bt AS assnScore,  -- Điểm bài tập
-        diem_btl AS projScore,    -- Điểm bài tập lớn (BTL)
-        diem_gk AS midScore,     -- Điểm giữa kỳ
-        diem_ck AS finalScore        -- Điểm cuối kỳ
-    FROM THAM_GIA_LOP_HOC
-    WHERE lop_id = @lop_id AND ma_sinh_vien = @ma_sinh_vien
+    SELECT 
+        m.ma_mon_hoc AS courseID,  -- Mã môn học
+        m.ten_mon_hoc AS courseName,  -- Tên môn học
+		t.diem_bt AS assnScore, 
+        t.diem_btl AS projScore, 
+        t.diem_gk AS midScore, 
+        t.diem_ck AS finalScore, 
+        t.diem_tong_ket AS totalScore,  -- Điểm tổng kết của môn học
+        -- Tính GPA theo hệ thống điểm 4.0 dựa trên điểm tổng kết
+        CASE
+            WHEN t.diem_tong_ket >= 9.5 THEN 4.0  -- A+
+            WHEN t.diem_tong_ket >= 8.4 THEN 3.7  -- A
+            WHEN t.diem_tong_ket >= 7.4 THEN 3.3  -- B+
+            WHEN t.diem_tong_ket >= 6.4 THEN 3.0  -- B
+            WHEN t.diem_tong_ket >= 5.4 THEN 2.5  -- C+
+            WHEN t.diem_tong_ket >= 4.4 THEN 2.0  -- C
+            WHEN t.diem_tong_ket >= 3.4 THEN 1.5  -- D+
+            WHEN t.diem_tong_ket >= 2.4 THEN 1.0  -- D
+            ELSE 0.0  -- F
+        END AS GPA
+    FROM 
+        THAM_GIA_LOP_HOC t
+    JOIN 
+        LOP_HOC l ON t.lop_id = l.lop_id
+    JOIN 
+        MON_HOC m ON l.ma_mon_hoc = m.ma_mon_hoc
+    WHERE 
+        t.ma_sinh_vien = @ma_sinh_vien 
+        AND l.hoc_ky = @hoc_ky
 );
 GO
 

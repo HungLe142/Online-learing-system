@@ -1,4 +1,4 @@
-import { getAllCourse , getStudentClassInfo } from '../models/StuModel.js';
+import { getAllCourse, getStudentClassInfo, getStudentScores } from '../models/StuModel.js';
 
 export async function GetAllCourse(req, res) {
     try {
@@ -35,3 +35,18 @@ export async function GetStudentClassInfo(req, res) {
       });  // Xử lý lỗi khi gọi API
     }
   }
+
+  export const GetScores = async (req, res) => {
+    try {
+      // Lấy điểm từ model
+      const scores = await getStudentScores(req.query);
+      if (scores.length === 0) {
+        return res.status(404).json({ message: 'No scores found for this student in the given semester.' });
+      }
+  
+      // Trả về dữ liệu cho client
+      return res.status(200).json(scores);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error retrieving scores', error });
+    }
+  };

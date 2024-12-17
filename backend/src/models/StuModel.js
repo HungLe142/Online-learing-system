@@ -35,6 +35,22 @@ export async function getStudentClassInfo(data) {
   }
 }
 
+export const getStudentScores = async (data) => {
+  try {
+    // Kết nối tới cơ sở dữ liệu
+    const pool = await connectToDb();
+    console.log(data)
+    // Gọi hàm LayDiemSinhVien
+    const result = await pool.query`
+      SELECT * FROM LayDiemSinhVien(${data.studentID}, ${data.semesterID})
+    `;
+    return result.recordset; // Trả về kết quả
+  } catch (err) {
+    console.error('Error getting student scores:', err);
+    throw err;  // Ném lỗi nếu có
+  }
+};
+
 function formatClassInfo(recordset) {
   return recordset.map(item => {
       return {
