@@ -19,19 +19,27 @@ export const getClasses = async (studentId, token) => {
     }
 };
 
-export const getInfo = async (user_id, token) => {
-    const serverUrl = APIEndPoint.SERVER_URL; // 'http://localhost:3001'
+export const modifyInfo = async (user, token) => {
+    const serverUrl = `${APIEndPoint.SERVER_URL}/user/info/${user.user_id}`;
+
     try {
-        const url = `${serverUrl}/user/info/${user_id}`;
-        console.log(url);
-        const response = await axios.get(url, {
+        const response = await fetch(serverUrl, {
+            method: 'POST',
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Gắn token vào header cho authorization
+            },
+            body: JSON.stringify(user)
         });
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching user info:', error);
-        throw error;
+
+        if (!response.ok) {
+            throw new Error(`Lỗi: ${response.status} - ${response.statusText}`);
+        }
+
+        const updatedUserInfo = await response.json();
+        return updatedUserInfo;
+    } catch (err) {
+        console.error('Lỗi khi gửi yêu cầu:', err);
+        throw err;
     }
 };
