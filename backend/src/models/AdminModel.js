@@ -95,3 +95,25 @@ export async function adminLogin(data) {
         return false;
     }
 }
+
+export async function addClass(data) {
+    try {
+      const pool = await connectToDb();
+      
+      const result = await pool.request()
+            .input('hoc_ky', sql.NVarChar(20), data.semesterID)
+            .input('ma_mon_hoc', sql.NVarChar(20), data.courseID)
+            .input('ma_giang_vien', sql.NVarChar(20), data.lecturerID)
+            .input('classTimetable', sql.NVarChar(sql.MAX), data.classTimetable)
+            .execute('TaoLopHoc');
+      // Lấy thông báo từ thủ tục
+      if (result.returnValue === 0) {
+          return { success: true, message: "Class added successfully!" };
+      } else {
+          return { success: false, message: `Error occurred. Code: ${result.returnValue}` };
+      }
+    } catch (err) {
+        console.error('Database Error:', err);
+        return { success: false, message: 'Failed to add class.', error: err.message };
+    }
+}

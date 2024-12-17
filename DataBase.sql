@@ -539,7 +539,70 @@ BEGIN
     WHERE sv.ma_sinh_vien = @ma_sinh_vien
     AND lh.hoc_ky = @hoc_ky;
 END;
+GO
 
+CREATE PROCEDURE TaoLopHoc
+    @hoc_ky VARCHAR(20),
+    @ma_mon_hoc NVARCHAR(20),
+	@ma_giang_vien VARCHAR(20),
+    @classTimetable NVARCHAR(MAX)  -- Mảng các buổi học (có thể là JSON hoặc chuỗi)
+AS
+BEGIN
+    -- Bắt đầu giao dịch để đảm bảo tính toàn vẹn của dữ liệu
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        DECLARE @ma_lop_hoc NVARCHAR(20);
+        DECLARE @base_class_id NVARCHAR(20);
+        DECLARE @max_class_id NVARCHAR(20);
+        DECLARE @class_suffix INT;
+
+        SET @base_class_id = @ma_mon_hoc;
+        -- Tìm mã lớp học cao nhất của môn học này
+        SELECT @max_class_id = MAX(lop_id)
+        FROM LOP_HOC
+        WHERE lop_id LIKE @base_class_id + '%';
+
+        -- Nếu không có lớp học nào, đặt số phụ là 1
+        IF @max_class_id IS NULL
+        BEGIN
+            SET @ma_lop_hoc = @base_class_id + '_1';
+        END
+        ELSE
+        BEGIN
+            -- Lấy số phụ (sau dấu '_') từ mã lớp học có số phụ cao nhất
+            SET @class_suffix = CAST(SUBSTRING(@max_class_id, LEN(@base_class_id) + 2, LEN(@max_class_id)) AS INT);
+            SET @class_suffix = @class_suffix + 1;
+
+            -- Tạo mã lớp học mới
+            SET @ma_lop_hoc = @base_class_id + '_' + CAST(@class_suffix AS NVARCHAR(10));
+        END
+
+        INSERT INTO LOP_HOC (lop_id, hoc_ky, ma_mon_hoc, ma_giang_vien)
+        VALUES (@ma_lop_hoc, @hoc_ky, @ma_mon_hoc, @ma_giang_vien);
+
+        INSERT INTO BUOI_HOC (lop_id, thu, tiet_bat_dau, tiet_ket_thuc, phong_hoc)
+        SELECT
+            @ma_lop_hoc,  -- Mã lớp học vừa tạo
+            thu,          -- Ngày trong tuần
+            tiet_bat_dau, -- Tiết bắt đầu
+            tiet_ket_thuc, -- Tiết kết thúc
+            phong_hoc  
+        FROM OPENJSON(@classTimetable) 
+        WITH (
+            thu INT,
+            tiet_bat_dau INT,
+            tiet_ket_thuc INT,
+            phong_hoc NVARCHAR(10)
+        );
+        
+        COMMIT TRANSACTION;
+		RETURN 0
+    END TRY
+    BEGIN CATCH
+       RETURN ERROR_MESSAGE();
+    END CATCH
+END;
 -- Thêm Dữ Liệu ----------------------------------------------------------------------------------------------------------------
 INSERT INTO ADMIN (admin_id, user_mail, mat_khau, ho_ten, email, so_dien_thoai, dia_chi)
 VALUES 
