@@ -85,20 +85,50 @@ export async function fetch_user_info(user_id) {
     }
 }
 
-export async function updateInfo(data) {
+export async function update_user_info(user_id, ho_ten, ngay_sinh, so_dien_thoai, dia_chi) {
+  let pool;
   try {
-    const pool = await connectToDb();
-    console.log(data.userId)
-    const result = await pool.request()
-      .input('user_id', sql.VarChar, data.userID)
-      .input('ho_ten', sql.NVarChar, data.fullName || null)  // Kiểm tra null và truyền giá trị nếu có
-      .input('gioi_tinh', sql.VarChar, data.gender || null)
-      .input('ngay_sinh', sql.Date, data.dateOfBirth || null)
-      .input('email', sql.VarChar, data.email || null)
-      .input('so_dien_thoai', sql.VarChar, data.phoneNumber || null)
-      .input('dia_chi', sql.NVarChar, data.address || null)
-      .input('khoa_id', sql.VarChar, data.departmentId || null)
-      .execute('CapNhatThongTinUser');
+      // Kết nối tới database
+      pool = await connectToDb();
+
+      // Câu truy vấn cập nhật thông tin user
+      const query = `
+          UPDATE [USER]
+          SET ho_ten = @ho_ten,
+              ngay_sinh = @ngay_sinh,
+              so_dien_thoai = @so_dien_thoai,
+              dia_chi = @dia_chi
+          WHERE user_id = @user_id
+      `;
+
+      // Thực hiện truy vấn cập nhật
+      const result = await pool.request()
+          .input('user_id', sql.VarChar(20), user_id)
+          .input('ho_ten', sql.NVarChar(255), ho_ten)
+          .input('ngay_sinh', sql.Date, ngay_sinh)
+          .input('so_dien_thoai', sql.VarChar(20), so_dien_thoai)
+          .input('dia_chi', sql.NVarChar(255), dia_chi)
+          .query(query);
+
+      // Kiểm tra kết quả và trả về thông tin user đã cập nhật
+      if (result.rowsAffected > 0) {
+          return await fetch_user_info(user_id);
+      } else {
+          throw new Error('Cập nhật thông tin user không thành công');
+      }
+  } catch (err) {
+      console.error('Lỗi truy vấn dữ liệu:', err);
+      throw err;
+  } finally {
+      // Đóng kết nối khi không còn sử dụng
+      if (pool) {
+          pool.close();
+      }
+  }
+}
+
+
+
 
     
       if (result.returnValue !== 0) {
