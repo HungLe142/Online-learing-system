@@ -603,6 +603,50 @@ BEGIN
        RETURN ERROR_MESSAGE();
     END CATCH
 END;
+GO
+
+CREATE PROCEDURE CapNhatThongTinUser
+    @user_id VARCHAR(20),       -- Mã người dùng (primary key)
+    @ho_ten NVARCHAR(255),      -- Họ tên người dùng
+    @gioi_tinh VARCHAR(10),     -- Giới tính người dùng
+    @ngay_sinh DATE,            -- Ngày sinh người dùng
+    @email VARCHAR(255),        -- Email riêng
+    @so_dien_thoai VARCHAR(20), -- Số điện thoại
+    @dia_chi NVARCHAR(255),     -- Địa chỉ người dùng
+    @khoa_id VARCHAR(20)       -- Mã khoa
+AS
+BEGIN
+    BEGIN TRY
+        -- Cập nhật thông tin người dùng
+        UPDATE [USER]
+        SET 
+            ho_ten = CASE WHEN @ho_ten IS NOT NULL THEN @ho_ten ELSE ho_ten END,
+            gioi_tinh = CASE WHEN @gioi_tinh IS NOT NULL THEN @gioi_tinh ELSE gioi_tinh END,
+            ngay_sinh = CASE WHEN @ngay_sinh IS NOT NULL THEN @ngay_sinh ELSE ngay_sinh END,
+            email = CASE WHEN @email IS NOT NULL THEN @email ELSE email END,
+            so_dien_thoai = CASE WHEN @so_dien_thoai IS NOT NULL THEN @so_dien_thoai ELSE so_dien_thoai END,
+            dia_chi = CASE WHEN @dia_chi IS NOT NULL THEN @dia_chi ELSE dia_chi END,
+            khoa_id = CASE WHEN @khoa_id IS NOT NULL THEN @khoa_id ELSE khoa_id END
+        WHERE user_id = @user_id;
+
+        -- Kiểm tra nếu không có bản ghi nào bị ảnh hưởng, tức là user_id không tồn tại
+        IF @@ROWCOUNT = 0
+        BEGIN
+            RAISERROR('User ID not found or no changes made.', 16, 1);
+        END
+        ELSE
+        BEGIN
+            -- Nếu cập nhật thành công, trả về 0
+            RETURN 0;
+        END
+    END TRY
+    BEGIN CATCH
+        -- Xử lý lỗi
+        PRINT 'Error: ' + ERROR_MESSAGE();
+        -- Trả về mã lỗi khi có lỗi
+        RETURN -1;
+    END CATCH
+END;
 -- Thêm Dữ Liệu ----------------------------------------------------------------------------------------------------------------
 INSERT INTO ADMIN (admin_id, user_mail, mat_khau, ho_ten, email, so_dien_thoai, dia_chi)
 VALUES 

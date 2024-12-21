@@ -85,5 +85,30 @@ export async function fetch_user_info(user_id) {
     }
 }
 
+export async function updateInfo(data) {
+  try {
+    const pool = await connectToDb();
+    console.log(data.userId)
+    const result = await pool.request()
+      .input('user_id', sql.VarChar, data.userID)
+      .input('ho_ten', sql.NVarChar, data.fullName || null)  // Kiểm tra null và truyền giá trị nếu có
+      .input('gioi_tinh', sql.VarChar, data.gender || null)
+      .input('ngay_sinh', sql.Date, data.dateOfBirth || null)
+      .input('email', sql.VarChar, data.email || null)
+      .input('so_dien_thoai', sql.VarChar, data.phoneNumber || null)
+      .input('dia_chi', sql.NVarChar, data.address || null)
+      .input('khoa_id', sql.VarChar, data.departmentId || null)
+      .execute('CapNhatThongTinUser');
 
+    
+      if (result.returnValue !== 0) {
+        return { success: false, message: `Error occurred. Code: ${result.returnValue}` };
+      } else {
+        return { success: true, message: 'Info updated successfully!' };
+      }
+    } catch (err) {
+      console.error('Database error:', err);
+      return { success: false, message: `Error occurred. Code: ${err.number}` };
+    }
+}
 
