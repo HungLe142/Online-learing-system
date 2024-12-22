@@ -1,19 +1,19 @@
 import React from "react";
 
-const LoginForm = ({ email, password, setEmail, setPassword, handleLogin, isLoggingIn, loginError }) => {
+const LoginForm = ({ userMail, password, setuserMail, setPassword, handleLogin, isLoggingIn, loginError }) => {
   return (
     <form onSubmit={handleLogin} className="space-y-4">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+        <label htmlFor="userMail" className="block text-sm font-medium text-gray-700">userMail</label>
         <input
-          id="email"
-          name="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Nhập email của bạn"
+          id="userMail"
+          name="userMail"
+          type="userMail"
+          value={userMail}
+          onChange={(e) => setuserMail(e.target.value)}
+          placeholder="Nhập userMail của bạn"
           required
-          autoComplete="email"
+          autoComplete="userMail"
           className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>

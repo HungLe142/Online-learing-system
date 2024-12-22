@@ -7,8 +7,8 @@ function Header({ isLoginRequired, onLoginClick }){
 
     return (
         <>
-            {/* {isAuthenticated ? <Header1  /> : <Header2 isLoginRequired={isLoginRequired} onLoginClick={onLoginClick}/>} */}
-            <Header1 />
+            {isAuthenticated ? <Header1  /> : <Header2 isLoginRequired={isLoginRequired} onLoginClick={onLoginClick}/>}
+            {/* <Header1 /> */}
         </>
     );
 }

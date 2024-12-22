@@ -22,6 +22,7 @@ const UserPanel = () => {
           className="bg-white p-2 rounded-lg hover:bg-red-300 hover:border-red-400 w-full text-left flex justify-center items-center space-x-2 border-2 border-gray-200"
           onClick={() => {
             logout();
+            navigate(ENDPOINTS.AUTH.LOGIN, { replace: true }); // Điều hướng về trang login nếu chưa xác thực
           }}
         >
           <span>Đăng xuất</span>

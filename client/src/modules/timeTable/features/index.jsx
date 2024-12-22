@@ -320,27 +320,23 @@ import { Link } from 'react-router-dom';
 import { ENDPOINTS } from '../../../routes/endPoints';
 import time_table_process from "../services/data_process";
 import { useSelector } from 'react-redux';
-// import { useAuth } from '../../../hooks/useAuth';
+import { useAuth } from '../../../hooks/useAuth';
 function Timetable() {
-//  const {user, token} = useAuth();
-// const  studentId = user.user_id;
-// const  lecturerId = user.user_id;
-// const role = user.role;
+  const {user, token} = useAuth();
+  //const role = user.role;
 
 /********************* Fix here !***************************/
   //const user = useSelector(state => state.auth.user);
   //const token = useSelector(state => state.auth.token);
-  // let studentId = null;
-  // let lecturerId = null;
-  
-  let studentId = 'SV001';
+  let studentId = null;
   let lecturerId = null;
-  let token = null
+  
 
-  // if(user.role == 'teacher')
-  //   lecturerId = user.user_id
-  // else if(user.role == 'student')
-  //   studentId = user.user_id
+
+  if(user.role === 'teacher')
+    lecturerId = user.user_id
+  else if(user.role === 'student')
+    studentId = user.user_id
   
 /********************* Fix here !***************************/
 

@@ -9,11 +9,8 @@ function CourseGrid() {
   const [loading, setLoading] = useState(true);
 
 /********************* Fix here !***************************/
-  //const user = useSelector(state => state.auth.user);
-  //const token = useSelector(state => state.auth.token);
-  //const {user} = useAuth();
-  let studentId = 'SV001';
-  let token = null;
+  const {user, token} = useAuth();
+  const  studentId = user.user_id;
 
 /********************* Fix here !***************************/
   useEffect(() => {
