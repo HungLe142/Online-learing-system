@@ -1,50 +1,48 @@
 import { connectToDb } from '../config/database.js';
 import sql from 'mssql';
 
-export async function getAllCourse(data) {
+export async function getTimetable(user, data) {
     try {
       const pool = await connectToDb();
-      console.log(data.studentID)
-      console.log( data.semesterID)
       const result = await pool.query`
-        SELECT * FROM DanhSachLopHoc(${data.studentID}, ${data.semesterID})
+        SELECT * FROM TKBSinhVien(${user.user_id}, ${data.hoc_ky})
         ORDER BY lop_id, thu
       `;
-      console.log(result.recordset);
-      return result.recordset
+      if (result.recordset.length > 0) {
+        return result.recordset[0]
+      } else {
+        throw new Error('Course not found');
+      }
     } catch (err) {
       console.error('Lỗi khi gọi hàm:', err);
-      return 1
+      throw err
     }
 }
 
-export async function getStudentClassInfo(data) {
+export async function getAllCourses(user, data) {
   try {
-    const pool = await connectToDb(); // Kết nối đến DB
-    const result = await pool.query`
-      EXEC GetStudentCourseInfo @ma_sinh_vien = ${data.studentID}, @hoc_ky = ${data.semesterID}
-    `; 
-    if (result.recordset.length === 0) {
-      return { success: false, message: 'No data found.' };
-    }
-   
-    return { success: true, data: formatClassInfo(result.recordset) };  // Trả về kết quả
+      const pool = await connectToDb(); // Kết nối đến DB
+      const result = await pool.query`
+        EXEC DanhSachLopHoc @ma_sinh_vien = ${user.user_id}, @hoc_ky = ${data.hoc_ky}
+      `; 
+      return formatClassInfo(result.recordset)  // Trả về kết quả
   } catch (err) {
-    console.error('Database error:', err);
-    return { success: false, errorCode: err.number, message: err.message };  // Xử lý lỗi
+      console.error('Database error:', err);
+      throw err;
   }
 }
 
-export const getStudentScores = async (data) => {
+export const getScores = async (user, data) => {
   try {
-    // Kết nối tới cơ sở dữ liệu
     const pool = await connectToDb();
-    console.log(data)
-    // Gọi hàm LayDiemSinhVien
     const result = await pool.query`
-      SELECT * FROM LayDiemSinhVien(${data.studentID}, ${data.semesterID})
+      SELECT * FROM DiemSinhVien(${user.user_id}, ${data.hoc_ky})
     `;
-    return result.recordset; // Trả về kết quả
+    if (result.recordset.length > 0) {
+      return result.recordset[0]
+    } else {
+      throw new Error('Course not found');
+    }
   } catch (err) {
     console.error('Error getting student scores:', err);
     throw err;  // Ném lỗi nếu có

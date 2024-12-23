@@ -1,10 +1,9 @@
 import express from 'express';
 const router = express.Router();
-import {GetAllCourse} from '../controllers/LecController.js';
+import { GetTimetable, GetAllCourses } from '../controllers/LecController.js';
 
 // Route thêm giảng viên
-router.get('/courses', GetAllCourse);
-
-
+router.get('/timetable', GetTimetable);
+router.get('/courses', GetAllCourses);
 
 export default router;

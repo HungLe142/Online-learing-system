@@ -5,6 +5,6 @@ import { UpdateScore, GetScore, Forum, ClassResources } from '../controllers/Cla
 // Route thêm giảng viên
 router.get('/classResources', ClassResources);
 router.post('/updateScore', UpdateScore);
-router.get('/getScore', GetScore);
+router.get('/scores', GetScore);
 router.get('/forum' ,Forum);
 export default router;

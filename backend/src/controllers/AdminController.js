@@ -1,21 +1,33 @@
-import { addLecturer, addStudent, adminLogin, addClass } from '../models/AdminModel.js'; // Đảm bảo gọi đúng hàm từ model
+import { login, addLecturer, addStudent, addClass, updateUserInfo, deleteUser} from '../models/AdminModel.js'; // Đảm bảo gọi đúng hàm từ model
+import jwt from 'jsonwebtoken';
+const SECRET_KEY = 'your_secret_key';
 
-// Controller thêm giảng viên
+export async function Login(req, res) {
+    try {
+        const result  = await login(req.body);
+        const token = jwt.sign(
+            {
+                userID: result.user_id,
+                role: result.role, // Đưa role vào payload để kiểm tra sau này
+            }, SECRET_KEY, { expiresIn: '1h' }); // Token hết hạn sau 1 giờ
+            
+        return res.status(200).json({
+            token: token,
+            user: result
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Login error', error: error.message });
+    }
+}
+
 export async function AddLecturer(req, res) {
     try {
-        const result = await addLecturer(req.body);
-
-        if (result.success) {
-            return res.status(200).json({ message: result.message });
-        } else {
-            return res.status(400).json({ message: result.message });
-        }
-    } catch (error) {
+        const result = await addLecturer(req.body);   
+        return res.status(200).json({ message: 'OK' });
+        
+    } catch (err) {
         console.error('Controller Error:', error);
-        return res.status(500).json({
-            message: "An error occurred while processing the request.",
-            error: error.message
-        });
+        res.status(500).json({ error: err.message });
     }
 }
 
@@ -24,53 +36,40 @@ export async function AddStudent(req, res) {
     try {
         const result = await addStudent(req.body);
         // Nếu có statusMessage, trả về thông báo
-        if (result.success) {
-            return res.status(200).json({ message: result.message });
-        } else {
-            return res.status(400).json({ message: result.message });
-        }
-    } catch (error) {
+        return res.status(200).json({ message: 'OK' });
+        
+    } catch (err) {
         console.error('Controller Error:', error);
-        return res.status(500).json({
-            message: "An error occurred while processing the request.",
-            error: error.message
-        });
-    }
-}
-
-export async function AdminLogin(req, res) {
-    try {
-      const result  = await adminLogin(req.body);
-      
-      if (result.success) {
-        return res.status(200).json({
-          token: "hehe",
-          user: result.data
-        });
-      } else {
-        return res.status(401).json({
-          message: result.message
-        });
-      }
-    } catch (error) {
-      return res.status(500).json({ message: 'Đã xảy ra lỗi trong quá trình đăng nhập', error: error.message });
+        res.status(500).json({ error: err.message });
     }
 }
 
 export async function AddClass(req, res) {
     try {
         const result = await addClass(req.body);
-        // Nếu có statusMessage, trả về thông báo
-        if (result.success) {
-            return res.status(200).json({ message: result.message });
-        } else {
-            return res.status(400).json({ message: result.message });
-        }
-    } catch (error) {
+        return res.status(200).json({ message: 'OK' });
+    } catch (err) {
         console.error('Controller Error:', error);
-        return res.status(500).json({
-            message: "An error occurred while processing the request.",
-            error: error.message
-        });
+        res.status(500).json({ error: err.message });
+    }
+}
+
+export async function UpdateUserInfo(req, res) {
+    try {
+        const result = await updateUserInfo(req.body);
+        return res.status(200).json({ message: 'OK' });
+    } catch (err) {
+        console.error('Controller Error:', error);
+        res.status(500).json({ error: err.message });
+    }
+}
+
+export async function DeleteUser(req, res) {
+    try {
+        const result = await deleteUser(req.body);
+        return res.status(200).json({ message: 'OK' });
+    } catch (err) {
+        console.error('Controller Error:', error);
+        res.status(500).json({ error: err.message });
     }
 }

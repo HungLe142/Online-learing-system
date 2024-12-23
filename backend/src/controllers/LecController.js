@@ -1,15 +1,25 @@
-import { getAllCourse } from '../models/LecModel.js';
+import { getTimetable, getAllCourses } from '../models/LecModel.js';
 
-export async function GetAllCourse(req, res) {
+export async function GetTimetable(req, res) {
     try {
         console.log(req.query);
-        const result = await getAllCourse(req.query);
-        // Nếu có statusMessage, trả về thông báo
-        if (result != 1) return res.status(200).json({ message: result });
-        else return res.status(200).json({ message: "Trả về thất bại" });
+        const result = await getTimetable(req.user, req.query);
+        return res.status(200).json(result);
 
     } catch (error) {
         console.error('Error adding lecturer:', error);
-        return res.status(500).json({ message: 'Đã xảy ra lỗi khi thêm giảng viên', error: error.message });
+        res.status(500).json({ error: err.message });
+    }
+}
+
+export async function GetAllCourses(req, res) {
+    try {
+        console.log(req.query);
+        const result = await getAllCourses(req.user, req.query);
+        return res.status(200).json(result);
+
+    } catch (error) {
+        console.error('Error adding lecturer:', error);
+        res.status(500).json({ error: err.message });
     }
 }

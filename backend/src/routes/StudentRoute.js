@@ -1,9 +1,10 @@
 import express from 'express';
 const router = express.Router();
-import {GetAllCourse , GetStudentClassInfo, GetScores} from '../controllers/StuController.js';
+import {GetTimetable , GetAllCourses, GetScores} from '../controllers/StuController.js';
 
 // Route thêm giảng viên
-router.get('/courses', GetAllCourse);
-router.get('/GetStudentClassInfo', GetStudentClassInfo);
-router.get('/getScore', GetScores);
+router.get('/timetable', GetTimetable);
+router.get('/courses', GetAllCourses);
+router.get('/scores', GetScores);
+
 export default router;

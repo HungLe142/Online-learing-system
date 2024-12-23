@@ -44,7 +44,7 @@ CREATE TABLE HOC_KY (
 CREATE TABLE KHOA (
     khoa_id VARCHAR(20) PRIMARY KEY, -- ID của khoa (khóa chính)
     ten_khoa NVARCHAR(255) NOT NULL, -- Tên của khoa (không được để trống)
-	ma_truong_khoa VARCHAR(20) NOT NULL, -- ID trưởng khoa của khoa (liên kết với bảng GIANG_VIEN)
+	ma_truong_khoa VARCHAR(20), -- ID trưởng khoa của khoa (liên kết với bảng GIANG_VIEN)
 	ngay_thanh_lap DATE,
 );
 
@@ -74,7 +74,7 @@ CREATE TABLE LOP_HOC (
     lop_id VARCHAR(20) PRIMARY KEY, -- ID của lớp (khóa chính)
     ma_mon_hoc VARCHAR(20) NOT NULL, -- ID của môn học (liên kết với bảng MON_HOC)
     hoc_ky VARCHAR(20) NOT NULL, -- Học kỳ của lớp học (liên kết với bảng HOC_KY)
-    ma_giang_vien VARCHAR(20) NOT NULL, -- Mã giảng viên phụ trách lớp học (liên kết với bảng GIANG_VIEN)
+    ma_giang_vien VARCHAR(20) -- Mã giảng viên phụ trách lớp học (liên kết với bảng GIANG_VIEN)
 );
 
 CREATE TABLE THAM_GIA_LOP_HOC (
@@ -84,6 +84,7 @@ CREATE TABLE THAM_GIA_LOP_HOC (
 	diem_btl FLOAT,
     diem_gk FLOAT, 
     diem_ck FLOAT, 
+    diem_tong_ket FLOAT,
     PRIMARY KEY(lop_id, ma_sinh_vien)
 );
 
@@ -114,7 +115,7 @@ CREATE TABLE TIN_NHAN (
 	lop_id VARCHAR(20) NOT NULL,
 	dien_dan_id INT NOT NULL,
     tin_nhan_id INT NOT NULL, -- ID của tin nhắn (khóa chính)
-    nguoi_gui VARCHAR(30) NOT NULL, -- ID của người gửi tin nhắn (liên kết đến bảng USER)
+    nguoi_gui VARCHAR(30) , -- ID của người gửi tin nhắn (liên kết đến bảng USER)
     noi_dung NVARCHAR(255) NOT NULL, -- Nội dung của tin nhắn
     thoi_gian DATETIME NOT NULL, -- Thời gian gửi tin nhắn
     phan_hoi_id INT,
@@ -123,16 +124,16 @@ CREATE TABLE TIN_NHAN (
 
 -- Tạo Ràng Buộc ----------------------------------------------------------------------------------------------------------------
 ALTER TABLE [USER]
-ADD CONSTRAINT FK_User_Khoa FOREIGN KEY (khoa_id) REFERENCES Khoa(khoa_id)  ;
+ADD CONSTRAINT FK_User_Khoa FOREIGN KEY (khoa_id) REFERENCES Khoa(khoa_id) ;
 
 ALTER TABLE GIANG_VIEN
-ADD CONSTRAINT FK_GiangVien_User FOREIGN KEY (ma_giang_vien) REFERENCES [USER](user_id)  ; -- Ràng buộc khóa ngoại liên kết với bảng USER
+ADD CONSTRAINT FK_GiangVien_User FOREIGN KEY (ma_giang_vien) REFERENCES [USER](user_id) ON DELETE CASCADE ;-- Ràng buộc khóa ngoại liên kết với bảng USER
 
 ALTER TABLE SINH_VIEN
-ADD CONSTRAINT FK_SinhVien_User FOREIGN KEY (ma_sinh_vien) REFERENCES [User](user_id)  ; -- Khóa ngoại liên kết bảng User
+ADD CONSTRAINT FK_SinhVien_User FOREIGN KEY (ma_sinh_vien) REFERENCES [User](user_id) ON DELETE CASCADE ; -- Khóa ngoại liên kết bảng User
 
 ALTER TABLE KHOA
-ADD CONSTRAINT FK_Khoa_GiangVien FOREIGN KEY (ma_truong_khoa) REFERENCES GIANG_VIEN(ma_giang_vien) ; -- Khóa ngoại liên kết bảng User
+ADD CONSTRAINT FK_Khoa_GiangVien FOREIGN KEY (ma_truong_khoa) REFERENCES GIANG_VIEN(ma_giang_vien) ON DELETE SET NULL ; -- Khóa ngoại liên kết bảng User
 
 ALTER TABLE MON_HOC
 ADD CONSTRAINT FK_MonHoc_Khoa FOREIGN KEY (khoa_id) REFERENCES KHOA(khoa_id)  ; -- Ràng buộc khóa ngoại liên kết với bảng KHOA
@@ -142,18 +143,18 @@ ADD CONSTRAINT FK_MonTienquyet_MonHoc FOREIGN KEY (ma_mon_hoc) REFERENCES MON_HO
 	CONSTRAINT FK_MonTienquyet_MonHoc_1 FOREIGN KEY (ma_mon_tien_quyet) REFERENCES MON_HOC(ma_mon_hoc)  ; -- Ràng buộc khóa ngoại liên kết với bảng KHOA
 
 ALTER TABLE DANG_KY_MON_HOC
-ADD CONSTRAINT FK_DangKyMonHoc_SinhVien FOREIGN KEY (ma_sinh_vien) REFERENCES SINH_VIEN(ma_sinh_vien)  , -- Ràng buộc khóa ngoại đến bảng SINH_VIEN
-    CONSTRAINT FK_DangKyMonHoc_MonHoc FOREIGN KEY (ma_mon_hoc) REFERENCES MON_HOC(ma_mon_hoc)  , -- Ràng buộc khóa ngoại đến bảng MON_HOC
+ADD CONSTRAINT FK_DangKyMonHoc_SinhVien FOREIGN KEY (ma_sinh_vien) REFERENCES SINH_VIEN(ma_sinh_vien) ON DELETE CASCADE , -- Ràng buộc khóa ngoại đến bảng SINH_VIEN
+    CONSTRAINT FK_DangKyMonHoc_MonHoc FOREIGN KEY (ma_mon_hoc) REFERENCES MON_HOC(ma_mon_hoc) ON DELETE CASCADE , -- Ràng buộc khóa ngoại đến bảng MON_HOC
 	CONSTRAINT FK_DangKyMonHoc_HocKy FOREIGN KEY (hoc_ky) REFERENCES HOC_KY(hoc_ky);
 
 ALTER TABLE LOP_HOC
-ADD CONSTRAINT FK_LopHoc_MonHoc FOREIGN KEY (ma_mon_hoc) REFERENCES MON_HOC(ma_mon_hoc)  , -- Ràng buộc khóa ngoại đến MON_HOC
-    CONSTRAINT FK_LopHoc_HocKy FOREIGN KEY (hoc_ky) REFERENCES HOC_KY(hoc_ky)  , -- Ràng buộc khóa ngoại đến HOC_KY
-    CONSTRAINT FK_LopHoc_GiangVien FOREIGN KEY (ma_giang_vien) REFERENCES GIANG_VIEN(ma_giang_vien)  ; -- Ràng buộc khóa ngoại đến GIANG_VIEN
+ADD CONSTRAINT FK_LopHoc_MonHoc FOREIGN KEY (ma_mon_hoc) REFERENCES MON_HOC(ma_mon_hoc) , -- Ràng buộc khóa ngoại đến MON_HOC
+    CONSTRAINT FK_LopHoc_HocKy FOREIGN KEY (hoc_ky) REFERENCES HOC_KY(hoc_ky) , -- Ràng buộc khóa ngoại đến HOC_KY
+    CONSTRAINT FK_LopHoc_GiangVien FOREIGN KEY (ma_giang_vien) REFERENCES GIANG_VIEN(ma_giang_vien) ON DELETE SET NULL ; -- Ràng buộc khóa ngoại đến GIANG_VIEN
 
 ALTER TABLE THAM_GIA_LOP_HOC
 ADD CONSTRAINT FK_ThamGiaLopHoc_LopHoc FOREIGN KEY (lop_id) REFERENCES LOP_HOC(lop_id)  , -- Ràng buộc khóa ngoại đến LOP_HOC
-    CONSTRAINT FK_ThamGiaLopHoc_SinhVien FOREIGN KEY (ma_sinh_vien) REFERENCES SINH_VIEN(ma_sinh_vien)   ; -- Ràng buộc khóa ngoại đến SiNH_VIEN
+    CONSTRAINT FK_ThamGiaLopHoc_SinhVien FOREIGN KEY (ma_sinh_vien) REFERENCES SINH_VIEN(ma_sinh_vien) ON DELETE CASCADE ; -- Ràng buộc khóa ngoại đến SiNH_VIEN
 
 ALTER TABLE BUOI_HOC
 ADD CONSTRAINT FK_BuoiHoc_LopHoc FOREIGN KEY (lop_id) REFERENCES LOP_HOC(lop_id)  ; -- Ràng buộc khóa ngoại liên kết với bảng LOP_HOC
@@ -165,13 +166,13 @@ ALTER TABLE DIEN_DAN
 ADD CONSTRAINT FK_DienDan_Lop FOREIGN KEY (lop_id) REFERENCES LOP_HOC(lop_id)  ; -- Ràng buộc khóa ngoại đến LOP_HOC
 
 ALTER TABLE TIN_NHAN
-ADD CONSTRAINT FK_TinNhan_User FOREIGN KEY (nguoi_gui) REFERENCES [USER](user_mail)  , -- Ràng buộc khóa ngoại đến USER
-	CONSTRAINT FK_TinNhan_DienDan FOREIGN KEY (lop_id, dien_dan_id) REFERENCES DIEN_DAN(lop_id, dien_dan_id)  ,
-	CONSTRAINT FK_TinNhan_TinNhan FOREIGN KEY (lop_id, dien_dan_id, phan_hoi_id) REFERENCES TIN_NHAN(lop_id, dien_dan_id, tin_nhan_id)  ;
+ADD CONSTRAINT FK_TinNhan_User FOREIGN KEY (nguoi_gui) REFERENCES [USER](user_mail) ON DELETE SET NULL , -- Ràng buộc khóa ngoại đến USER
+	CONSTRAINT FK_TinNhan_DienDan FOREIGN KEY (lop_id, dien_dan_id) REFERENCES DIEN_DAN(lop_id, dien_dan_id) ,
+	CONSTRAINT FK_TinNhan_TinNhan FOREIGN KEY (lop_id, dien_dan_id, phan_hoi_id) REFERENCES TIN_NHAN(lop_id, dien_dan_id, tin_nhan_id) ;
 
 
 -- Các hàm ----------------------------------------------------------------------------------------------------------------
-CREATE FUNCTION DanhSachLopGiangDay (
+CREATE FUNCTION TKBGiangVien (
     @ma_giang_vien VARCHAR(20),
     @hoc_ky VARCHAR(20)
 )
@@ -194,7 +195,7 @@ RETURN
 );
 GO
 
-CREATE FUNCTION DanhSachLopHoc (
+CREATE FUNCTION TKBSinhVien (
     @ma_sinh_vien VARCHAR(20),
     @hoc_ky VARCHAR(20)
 )
@@ -232,7 +233,7 @@ RETURN
 );
 GO
 
-CREATE FUNCTION LayDiemSinhVien
+CREATE FUNCTION DiemSinhVien
 (
     @ma_sinh_vien VARCHAR(20),  -- Mã sinh viên
     @hoc_ky VARCHAR(20)         -- Học kỳ
@@ -273,7 +274,7 @@ RETURN
 );
 GO
 
-CREATE FUNCTION LayThongTinForum
+CREATE FUNCTION ThongTinForum
 (
     @lop_id VARCHAR(20),
     @dien_dan_id INT
@@ -299,37 +300,6 @@ RETURN
 GO
 
 -- Các thủ tục ----------------------------------------------------------------------------------------------------------------
-CREATE PROCEDURE KiemTraDangNhap
-    @user_mail VARCHAR(30),
-    @mat_khau VARCHAR(255)
-AS
-BEGIN
-    -- Kiểm tra nếu thông tin đăng nhập hợp lệ
-    IF EXISTS (SELECT 1 FROM [USER] WHERE user_mail = @user_mail AND mat_khau = @mat_khau)
-    BEGIN
-        -- Trả về thông tin người dùng
-        SELECT 
-            user_id,
-            user_mail,
-            ho_ten,
-            so_dien_thoai,
-            ngay_sinh,
-            gioi_tinh,
-            dia_chi,
-            khoa_id
-        FROM [USER]
-        WHERE user_mail = @user_mail;
-    END
-    ELSE
-    BEGIN
-        -- Trả về lỗi đăng nhập
-        SELECT 
-            'error' AS status,
-            'Invalid email or password' AS message;
-    END
-END;
-GO
-
 CREATE PROCEDURE KiemTraDangNhapAdmin
     @user_mail VARCHAR(30),
     @mat_khau VARCHAR(255)
@@ -395,8 +365,7 @@ BEGIN
 
     END TRY
     BEGIN CATCH
-        -- Bắt lỗi và trả về mã lỗi
-        RETURN ERROR_NUMBER(); -- Trả về mã lỗi SQL Server
+        THROW;
     END CATCH
 END;
 GO
@@ -441,7 +410,7 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Bắt lỗi và trả về mã lỗi
-        RETURN ERROR_NUMBER(); -- Trả về mã lỗi SQL Server
+        THROW; -- Trả về mã lỗi SQL Server
     END CATCH
 END;
 GO
@@ -461,7 +430,7 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Bắt lỗi và trả về mã lỗi cùng thông điệp lỗi
-        RETURN ERROR_NUMBER();
+        THROW;
     END CATCH
 END;
 GO
@@ -509,7 +478,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE GetStudentCourseInfo
+CREATE PROCEDURE DanhSachLopHoc
     @ma_sinh_vien VARCHAR(20),  -- Tham số sinh viên
     @hoc_ky VARCHAR(20)         -- Tham số học kỳ
 AS
@@ -517,7 +486,7 @@ BEGIN
     SELECT 
         sv.ma_sinh_vien,
         lh.lop_id,
-        lh.ma_mon_hoc + ' - ' + mh.ten_mon_hoc + ' - ' + lh.hoc_ky AS ten_lop,
+        mh.ten_mon_hoc + ' - ' + lh.hoc_ky + ' - ' + lh.lop_id AS ten_lop,
         lh.ma_mon_hoc,
         lh.hoc_ky,
         lh.ma_giang_vien,
@@ -563,18 +532,14 @@ BEGIN
         FROM LOP_HOC
         WHERE lop_id LIKE @base_class_id + '%';
 
-        -- Nếu không có lớp học nào, đặt số phụ là 1
         IF @max_class_id IS NULL
         BEGIN
             SET @ma_lop_hoc = @base_class_id + '_1';
         END
         ELSE
         BEGIN
-            -- Lấy số phụ (sau dấu '_') từ mã lớp học có số phụ cao nhất
             SET @class_suffix = CAST(SUBSTRING(@max_class_id, LEN(@base_class_id) + 2, LEN(@max_class_id)) AS INT);
             SET @class_suffix = @class_suffix + 1;
-
-            -- Tạo mã lớp học mới
             SET @ma_lop_hoc = @base_class_id + '_' + CAST(@class_suffix AS NVARCHAR(10));
         END
 
@@ -606,20 +571,22 @@ END;
 GO
 
 CREATE PROCEDURE CapNhatThongTinUser
-    @user_id VARCHAR(20),       -- Mã người dùng (primary key)
-    @ho_ten NVARCHAR(255),      -- Họ tên người dùng
-    @gioi_tinh VARCHAR(10),     -- Giới tính người dùng
-    @ngay_sinh DATE,            -- Ngày sinh người dùng
-    @email VARCHAR(255),        -- Email riêng
-    @so_dien_thoai VARCHAR(20), -- Số điện thoại
-    @dia_chi NVARCHAR(255),     -- Địa chỉ người dùng
-    @khoa_id VARCHAR(20)       -- Mã khoa
+    @user_id VARCHAR(20),       
+    @mat_khau VARCHAR(255),
+    @ho_ten NVARCHAR(255),      
+    @gioi_tinh VARCHAR(10),    
+    @ngay_sinh DATE,            
+    @email VARCHAR(255),       
+    @so_dien_thoai VARCHAR(20), 
+    @dia_chi NVARCHAR(255),     
+    @khoa_id VARCHAR(20)       
 AS
 BEGIN
     BEGIN TRY
         -- Cập nhật thông tin người dùng
         UPDATE [USER]
         SET 
+            mat_khau = CASE WHEN @mat_khau IS NOT NULL THEN @mat_khau ELSE mat_khau END,
             ho_ten = CASE WHEN @ho_ten IS NOT NULL THEN @ho_ten ELSE ho_ten END,
             gioi_tinh = CASE WHEN @gioi_tinh IS NOT NULL THEN @gioi_tinh ELSE gioi_tinh END,
             ngay_sinh = CASE WHEN @ngay_sinh IS NOT NULL THEN @ngay_sinh ELSE ngay_sinh END,
@@ -629,22 +596,9 @@ BEGIN
             khoa_id = CASE WHEN @khoa_id IS NOT NULL THEN @khoa_id ELSE khoa_id END
         WHERE user_id = @user_id;
 
-        -- Kiểm tra nếu không có bản ghi nào bị ảnh hưởng, tức là user_id không tồn tại
-        IF @@ROWCOUNT = 0
-        BEGIN
-            RAISERROR('User ID not found or no changes made.', 16, 1);
-        END
-        ELSE
-        BEGIN
-            -- Nếu cập nhật thành công, trả về 0
-            RETURN 0;
-        END
     END TRY
     BEGIN CATCH
-        -- Xử lý lỗi
-        PRINT 'Error: ' + ERROR_MESSAGE();
-        -- Trả về mã lỗi khi có lỗi
-        RETURN -1;
+        THROW;
     END CATCH
 END;
 -- Thêm Dữ Liệu ----------------------------------------------------------------------------------------------------------------

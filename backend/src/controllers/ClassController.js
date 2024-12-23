@@ -3,24 +3,12 @@ import { classResources, getScore, updateScore, forum } from '../models/ClassMod
 // Controller lấy tài nguyên lớp học
 export async function ClassResources(req, res) {
   try {
-    const result = await classResources(req.query);
-    
-    if (result.success) {
-      return res.status(200).json({ message: result.data });  // Trả về dữ liệu khi thành công
-    } else {
-      return res.status(400).json({
-        success: false,
-        errorCode: result.errorCode,
-        message: result.message
-      });  // Trả về lỗi nếu có
-    }
+      const result = await classResources(req.query);
+      return res.status(200).json(result);  // Trả về dữ liệu khi thành công
+  
   } catch (error) {
     console.error('Error in ClassResources:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error occurred while fetching class resources.',
-      error: error.message
-    });
+    return res.status(500).json({ error: error.message });
   }
 }
 
@@ -28,23 +16,11 @@ export async function ClassResources(req, res) {
 export async function UpdateScore(req, res) {
   try {
     const result = await updateScore(req.body);
-    
-    if (result.success) {
-      return res.status(200).json({ message: result.message });  // Trả về thông báo thành công
-    } else {
-      return res.status(400).json({
-        success: false,
-        errorCode: result.errorCode,
-        message: result.message
-      });  // Trả về lỗi nếu có
-    }
+    return res.status(200).json({ message: 'OK' });  // Trả về thông báo thành công
+  
   } catch (error) {
     console.error('Error in UpdateScore:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error occurred while updating score.',
-      error: error.message
-    });
+    return res.status(500).json({ error: error.message });
   }
 }
 
@@ -52,23 +28,10 @@ export async function UpdateScore(req, res) {
 export async function GetScore(req, res) {
   try {
     const result = await getScore(req.query);
-    
-    if (result.success) {
-      return res.status(200).json({ message: result.data });  // Trả về dữ liệu khi thành công
-    } else {
-      return res.status(400).json({
-        success: false,
-        errorCode: result.errorCode,
-        message: result.message
-      });  // Trả về lỗi nếu có
-    }
+    return res.status(200).json(result);  // Trả về dữ liệu khi thành công
   } catch (error) {
     console.error('Error in GetScore:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error occurred while fetching scores.',
-      error: error.message
-    });
+    return res.status(500).json({ error: error.message });
   }
 }
 
@@ -76,22 +39,10 @@ export async function GetScore(req, res) {
 export async function Forum(req, res) {
   try {
     const result = await forum(req.query);
+    return res.status(200).json(result);  // Trả về dữ liệu khi thành công
     
-    if (result.success) {
-      return res.status(200).json({ message: result.data });  // Trả về dữ liệu khi thành công
-    } else {
-      return res.status(400).json({
-        success: false,
-        errorCode: result.errorCode,
-        message: result.message
-      });  // Trả về lỗi nếu có
-    }
   } catch (error) {
     console.error('Error in Forum:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error occurred while fetching forum details.',
-      error: error.message
-    });
+    return res.status(500).json({ error: error.message });
   }
 }
