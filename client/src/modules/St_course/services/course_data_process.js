@@ -13,11 +13,11 @@ const courseDataProcess = async (studentId, token) => {
     const instructorImage = "https://cdn.builder.io/api/v1/image/assets/TEMP/f74733f6d18a33e68478744ebca07adcdd1065684e56984388baba9a3cee1c38?placeholderIfAbsent=true&apiKey=673b43bfd43741dfb5fb4f80631ec9b7";
 
     // Kiểm tra nếu apiData là một mảng
-    // if (!Array.isArray(apiData)) {
-    //   throw new TypeError('API data is not an array');
-    // }
-    let data = apiData.message
-    const processedData = data.map(item => ({
+    if (!Array.isArray(apiData)) {
+      throw new TypeError('API data is not an array');
+    }
+
+    const processedData = apiData.map(item => ({
       imageUrl: imageUrl,
       title: item.ten_lop,
       instructorImage: instructorImage,
@@ -32,5 +32,6 @@ const courseDataProcess = async (studentId, token) => {
     throw error;
   }
 };
+
 
 export default courseDataProcess;

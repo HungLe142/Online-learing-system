@@ -6,14 +6,14 @@ import { ENDPOINTS } from "../../../routes/endPoints";
 import LoginForm from "../components/form";
 const Login = () => {
   const { login, isLoggingIn, loginError, isAuthenticated, user } = useAuth();
-  const [userMail, setuserMail] = useState("");
-  const [password, setPassword] = useState("");
+  const [user_mail, setuserMail] = useState("");
+  const [mat_khau, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log({ userMail, password });
-    login({ userMail, password });
+    console.log({ user_mail, mat_khau });
+    login({ user_mail, mat_khau });
   };
 
 
@@ -50,8 +50,8 @@ const Login = () => {
 
         {/* Sử dụng LoginForm */}
         <LoginForm
-          userMail={userMail}
-          password={password}
+          user_mail={user_mail}
+          mat_khau={mat_khau}
           setuserMail={setuserMail}
           setPassword={setPassword}
           handleLogin={handleLogin}

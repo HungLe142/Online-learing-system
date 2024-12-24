@@ -5,8 +5,8 @@ export const change_user_info = async (user, token) => {
   return modifyInfo(user, token)
 };
 
-export const Get_user_info = async (user_id, token) => {
-  return get_user_info(user_id, token)  // reuse the function in info module
+export const Get_user_info = async (token) => {
+  return get_user_info(token)  // reuse the function in info module
 };
 
 export const createUserObject = (userId, userInfo) => {

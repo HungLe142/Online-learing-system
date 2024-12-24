@@ -1,32 +1,59 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import LessonCard from "../components/LessonCard";
 import ContentCard from "../components/ContentCard";
 import { Link } from "react-router-dom";
 import { ENDPOINTS } from "../../../routes/endPoints";
 import  icons_back from "../../../assets/icons/icon_back.png";
-//import courseDataProcess from "../services/course_data_process";
+import {getRawClasses, getRawExercise, generate_class_UI_data, generate_Material_UI_data} from "../services/courseContentProcess";
+import { useSelector } from 'react-redux';
+import { useAuth } from "../../../hooks/useAuth";
 
-const lessons = [ // classes
-  { title: "Lesson 01 : Introduction about XD", duration: "30 mins", bgColor: "bg-teal-400" },
-  { title: "Lesson 02: Introduction about XD", duration: "30 mins", bgColor: "bg-amber-500 bg-opacity-30" },
-  { title: "Lesson 03 : Introduction about XD", duration: "30 mins", bgColor: "bg-blue-300 bg-opacity-30" },
-  { title: "Lesson 04 : Introduction about XD", duration: "30 mins", bgColor: "bg-red-400 bg-opacity-30" }
-];
-
-const exercises = [ // materials in a class
-  { title: "Lesson 00001 : Introduction about XD", duration: "30 mins", bgColor: "bg-blue-300 bg-opacity-30" },
-  { title: "Lesson 01 : Introduction about XD", duration: "30 mins", bgColor: "bg-amber-500 bg-opacity-30" },
-];
-
-const contentCards = [
-  {
-    imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/814d904cbf8b0127bfeb9ed592c731c9807ae1a3045dc990c88bf615d23d7f3a?placeholderIfAbsent=true&apiKey=673b43bfd43741dfb5fb4f80631ec9b7",
-    title: "Chủ đề lesson",
-    requirement: "Yêu cầu của giảng viên"
-  }
-];
 
 export default function CourseContent() {
+
+  const {user, token} = useAuth();
+  const [lessons, setLessons] = useState([]);
+  const [selectedClassId, setSelectedClassId] = useState(null);
+  const [materials, setMaterials] = useState([]);
+  const [contentCards, setContentCards] = useState([]);
+
+  useEffect(() => {
+    const fetchClasses = async () => {
+        try {
+            const classes = await getRawClasses(token);
+            const formattedClasses = generate_class_UI_data(classes);
+            setLessons(formattedClasses);
+            
+            if (classes.length > 0) {
+                const classMaterials = await getRawExercise(token, classes[0].lop_id);
+                const formattedMaterials = generate_Material_UI_data(classMaterials);
+                setMaterials(classMaterials);
+                setContentCards(formattedMaterials); // Use setContentCards to update state
+            }
+        } catch (error) {
+            console.error('Error fetching classes:', error);
+        }
+    };
+
+    fetchClasses();
+  }, [token]);
+
+  const handleLessonClick = async (lop_id) => {
+    setSelectedClassId(lop_id);
+    try {
+        const classMaterials = await getRawExercise(token, lop_id);
+        //console.log("Get material: ", classMaterials)
+        setMaterials(classMaterials);
+        const formattedMaterials = generate_Material_UI_data(classMaterials);
+        setContentCards(formattedMaterials);
+        console.log("UI material: ", contentCards)
+    } catch (error) {
+        console.error('Error fetching materials:', error);
+    }
+    console.log("Selected Class ID:", lop_id);
+  };
+
   return (
     <div className="overflow-hidden pl-8 bg-white max-md:pl-5">
       <div className="flex gap-5 max-md:flex-col">
@@ -45,7 +72,11 @@ export default function CourseContent() {
               Class
             </div>
             {lessons.map((lesson, index) => (
-              <LessonCard key={index} {...lesson} />
+              <LessonCard 
+                key={index} 
+                {...lesson} 
+                onClick={() => handleLessonClick(lesson.lop_id)}
+              />
             ))}
 
           </div>
@@ -64,13 +95,14 @@ export default function CourseContent() {
             <div className="flex flex-col items-start px-3.5 pt-9 pb-16 mt-3.5 w-full bg-blue-300 bg-blend-normal max-md:mr-1.5 max-md:max-w-full">
               <div className="self-stretch mt-7 ml-5 max-md:max-w-full">
                 <div className="flex gap-5 max-md:flex-col">
-                  {[1, 2, 3, 4].map((index) => (
-                    <div key={index} className="flex flex-col w-3/12 max-md:ml-0 max-md:w-full">
-                      <ContentCard {...contentCards[0]} />
-                    </div>
-                  ))}
+                    {contentCards.map((card, index) => (
+                        <div key={index} className="flex flex-col w-3/12 max-md:ml-0 max-md:w-full">
+                            <ContentCard {...card} />
+                        </div>
+                    ))}
                 </div>
-              </div>
+            </div>
+
               
               
               

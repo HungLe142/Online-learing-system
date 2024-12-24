@@ -10,11 +10,9 @@ import { useAuth } from '../../../hooks/useAuth';
 function UserProfile() {
 
 /********************* Fix here !***************************/
-  // const {user, token} = useAuth();
-  // const  user_id = user.user_id;
+  const {user, token} = useAuth();
+  const  userId = user.user_id;
   
-  let userId = 'SV001';
-  let token = 'your_token_here';
 /********************* Fix here !***************************/
 
   const [userInfo, setUserInfo] = useState({
@@ -28,7 +26,7 @@ function UserProfile() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const data = await Get_user_info(userId, token);
+        const data = await Get_user_info(token);
         setUserInfo({
           name: data.name,
           location: data.location,
@@ -57,7 +55,8 @@ function UserProfile() {
     e.preventDefault();
     // Process form submission here (e.g., send data to an API)\
     const user = createUserObject(userId, userInfo);
-    change_user_info(user, token);
+    let data = change_user_info(user, token);
+    console.log("Updated data: ", data)
   };
 
   return (

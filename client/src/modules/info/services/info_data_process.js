@@ -5,10 +5,10 @@ const formatDate = (dateString) => {
   return date.toISOString().split('T')[0]; // Chỉ lấy phần ngày trước 'T' 
 };
 
-const get_user_info = async (user_ID, token) => {
+const get_user_info = async (token) => {
   try {
     // Gọi API để lấy dữ liệu
-    const apiData = await getInfo(user_ID, token);
+    const apiData = await getInfo(token);
 
     // Kiểm tra dữ liệu trả về từ API
     console.log('API Data:', apiData);

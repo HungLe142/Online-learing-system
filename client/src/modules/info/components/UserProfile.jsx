@@ -12,10 +12,7 @@ import { useAuth } from '../../../hooks/useAuth';
 
 function UserProfile() {
 /********************* Fix here !***************************/
-// const {user, token} = useAuth();
-// const  user_id = user.user_id;
-  let user_id = 'SV001';
-  let token = 'your_token_here';
+  const {token} = useAuth();
 /********************* Fix here !***************************/
 
   const [personalInfo, setPersonalInfo] = useState(null);
@@ -23,7 +20,7 @@ function UserProfile() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const info = await get_user_info(user_id, token);
+        const info = await get_user_info(token);
         setPersonalInfo(info);
       } catch (error) {
         console.error('Error fetching user info:', error);
@@ -31,7 +28,7 @@ function UserProfile() {
     };
 
     fetchUserInfo();
-  }, [user_id, token]);
+  }, [token]);
 
   if (!personalInfo) {
     return <div>Loading...</div>; // Hiển thị trạng thái loading khi dữ liệu chưa được trả về

@@ -35,10 +35,10 @@ export const getTimeTable = async (studentId, lecturerId) => {
   }
 };
 
-export const getInfo = async (user_id, token) => {
+export const getInfo = async (token) => {
   const serverUrl = APIEndPoint.SERVER_URL; // 'http://localhost:3001'
   try {
-      const url = `${serverUrl}/user/info/${user_id}`;
+      const url = `${serverUrl}/user/info`;
       console.log(url);
       const response = await axios.get(url, {
           headers: {

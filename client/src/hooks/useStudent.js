@@ -5,7 +5,7 @@ export const getClasses = async (studentId, token) => {
     let semesterId = 'HK241';
     const serverUrl = APIEndPoint.SERVER_URL;
     try {
-        const url = `${serverUrl}/student/GetStudentClassInfo?studentID=${studentId}&semesterID=${semesterId}`;
+        const url = `${serverUrl}/student/courses?hoc_ky=${semesterId}`;
         console.log(url);
         const response = await axios.get(url, {
             headers: {
@@ -20,7 +20,7 @@ export const getClasses = async (studentId, token) => {
 };
 
 export const modifyInfo = async (user, token) => {
-    const serverUrl = `${APIEndPoint.SERVER_URL}/user/info/${user.user_id}`;
+    const serverUrl = `${APIEndPoint.SERVER_URL}/user/updInfo`;
 
     try {
         const response = await fetch(serverUrl, {
@@ -41,5 +41,22 @@ export const modifyInfo = async (user, token) => {
     } catch (err) {
         console.error('Lỗi khi gửi yêu cầu:', err);
         throw err;
+    }
+};
+
+export const getClassMaterials = async (token, class_id) => {
+    const serverUrl = APIEndPoint.SERVER_URL;
+    try {
+        const url = `${serverUrl}/class/classResources?lop_id=${class_id}`;
+        //console.log(url);
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching material:', error);
+        throw error;
     }
 };
