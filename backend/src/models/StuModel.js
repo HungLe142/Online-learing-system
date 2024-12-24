@@ -9,7 +9,7 @@ export async function getTimetable(user, data) {
         ORDER BY lop_id, thu
       `;
       if (result.recordset.length > 0) {
-        return result.recordset[0]
+        return result.recordset
       } else {
         throw new Error('Course not found');
       }
@@ -39,7 +39,7 @@ export const getScores = async (user, data) => {
       SELECT * FROM DiemSinhVien(${user.user_id}, ${data.hoc_ky})
     `;
     if (result.recordset.length > 0) {
-      return result.recordset[0]
+      return result.recordset
     } else {
       throw new Error('Course not found');
     }
