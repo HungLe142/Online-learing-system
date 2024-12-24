@@ -9,7 +9,7 @@ export async function getTimetable(user, data) {
           ORDER BY lop_id, thu
         `;
       if (result.recordset.length > 0) {
-        return result.recordset[0]
+        return result.recordset
       } else {
         throw new Error('Course not found');
       }
@@ -35,7 +35,6 @@ export async function getAllCourses(user, data) {
               JOIN MON_HOC ON LOP_HOC.ma_mon_hoc = MON_HOC.ma_mon_hoc
               WHERE LOP_HOC.ma_giang_vien = @ma_giang_vien AND LOP_HOC.hoc_ky = @hoc_ky;
           `);
-
       return result.recordset;  // Trả về danh sách các lớp học với thông tin môn học
   } catch (err) {
       console.error('Database Error:', err);
