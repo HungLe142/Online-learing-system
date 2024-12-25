@@ -1,25 +1,26 @@
-import { getClasses, getClassMaterials } from '../../../hooks/useStudent';
+import { getClasses, getClassMaterials } from '../../../hooks/useUser';
 
 export const getRawExercise = async (token, class_id) => {
     return getClassMaterials(token, class_id);
 };
 
-export const getRawClasses = async (token) => {
-    return getClasses(null, token);
+export const getRawClasses = async (user_id, token) => {
+    return getClasses(user_id, token);
 };
 
-export const generate_class_UI_data = (classes) => {
-    //const bgColors = ["bg-teal-400", "bg-amber-500 bg-opacity-30", "bg-blue-300 bg-opacity-30", "bg-red-400 bg-opacity-30"];
+export const generate_class_UI_data = (classes, user) => {
+    // const bgColors = ["bg-teal-400", "bg-amber-500 bg-opacity-30", "bg-blue-300 bg-opacity-30", "bg-red-400 bg-opacity-30"];
     return classes.map((item, index) => ({
         title: item.ten_lop,
-        //bgColor: bgColors[index % bgColors.length],
+        // bgColor: bgColors[index % bgColors.length],
         bgColor: "bg-amber-500 bg-opacity-30",
         lop_id: item.lop_id,
-        lec_name: item.GiangVien.User.ho_ten,
+        lec_name: user.user_id.startsWith('SV') ? item.GiangVien.User.ho_ten : user.ho_ten,
         class_name: item.ten_lop,
         class_id: item.lop_id
     }));
 };
+
 
 export const generate_Material_UI_data = (materials) => {
     return materials.map(material => ({

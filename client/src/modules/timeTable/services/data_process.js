@@ -28,6 +28,7 @@ const dayMapping = {
 const time_table_process = async (studentId, lecturerId, token) => {
   try {
     // Gọi API để lấy dữ liệu, bao gồm header chứa token
+    //console.log("studentID, lectureID: ", studentId, lecturerId)
     const apiData = await getTimeTable(studentId, lecturerId, token, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -36,7 +37,14 @@ const time_table_process = async (studentId, lecturerId, token) => {
     console.log("API Data: ", apiData);
 
     // Kiểm tra dữ liệu trả về từ API
-    const courses = apiData.message;  // Chỉ cần lấy apiData vì getTimeTable đã trả về data
+    let courses = null;
+    if(studentId == null && lecturerId != null){
+      courses = apiData;
+    } else if (studentId =! null && lecturerId == null) {
+      courses = apiData.message;
+    }
+    //const courses = apiData.message;  // Chỉ cần lấy apiData vì getTimeTable đã trả về data
+    
 
     // Kiểm tra xem courses có phải là một mảng không
     if (!Array.isArray(courses)) {

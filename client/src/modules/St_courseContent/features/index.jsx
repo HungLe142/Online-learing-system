@@ -10,7 +10,7 @@ import {getRawClasses, getRawExercise, generate_class_UI_data, generate_Material
 import { useSelector } from 'react-redux';
 import { useAuth } from "../../../hooks/useAuth";
 
-
+// This page is currently used for both student and teacher
 export default function CourseContent() {
   let have_id = false;
   const { id } = useParams();
@@ -37,8 +37,8 @@ export default function CourseContent() {
   useEffect(() => {
     const fetchClasses = async () => {
         try {
-            const classes = await getRawClasses(token);
-            const formattedClasses = generate_class_UI_data(classes);
+            const classes = await getRawClasses(user.user_id, token);
+            const formattedClasses = generate_class_UI_data(classes, user);
             setLessons(formattedClasses);
             
             if (classes.length > 0 && !have_id) {
@@ -58,7 +58,7 @@ export default function CourseContent() {
               
               for (const classItem of classes) {
                 if (classItem.lop_id === id) {
-                    setLecName(classItem.GiangVien.User.ho_ten);
+                    setLecName(user.user_id.startsWith('SV') ? classItem.GiangVien.User.ho_ten : user.ho_ten);
                     setSubName(classItem.ten_lop)
                     setSubID(classItem.lop_id)
                     break;
@@ -145,9 +145,10 @@ export default function CourseContent() {
               
               
               
-              <div className="mt-12 ml-9 text-3xl text-black max-md:mt-10 max-md:ml-2.5">
-                Nộp bài
-              </div>
+            <div className="mt-12 ml-9 text-3xl text-black max-md:mt-10 max-md:ml-2.5">
+              {user.user_id.startsWith('SV') ? 'Nộp bài' : 'Bài nộp của sinh viên'}
+            </div>
+
               <div className="mt-5 max-w-full w-[662px]">
                 <div className="flex gap-5 max-md:flex-col">
                   {[1, 2].map((index) => (

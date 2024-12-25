@@ -10,13 +10,13 @@ function CourseGrid() {
 
 /********************* Fix here !***************************/
   const {user, token} = useAuth();
-  const  studentId = user.user_id;
+  const  user_id = user.user_id;
 
 /********************* Fix here !***************************/
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await courseDataProcess(studentId, token);
+        const data = await courseDataProcess(user_id, token, user);
         setCourseData(data);
       } catch (error) {
         console.error('Error fetching course data:', error);
@@ -26,7 +26,7 @@ function CourseGrid() {
     };
 
     fetchData();
-  }, [studentId]);
+  }, [user_id]);
 
   if (loading) return <div>Loading...</div>;
 

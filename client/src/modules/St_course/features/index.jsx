@@ -1,6 +1,6 @@
 import * as React from "react";
 import CourseGrid from "../components/CourseGrid";
-
+// this page is currently used for both student and lecture
 function CoursePage() {
   //const studentId = 'sv001'; // Need modify
   return (

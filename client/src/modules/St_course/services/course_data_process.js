@@ -1,9 +1,9 @@
-import { getClasses } from '../../../hooks/useStudent';
+import { getClasses } from '../../../hooks/useUser';
 
-const courseDataProcess = async (studentId, token) => {
+const courseDataProcess = async (user_id, token, user=null) => {
   try {
     // Gọi API để lấy dữ liệu
-    const apiData = await getClasses(studentId, token);
+    const apiData = await getClasses(user_id, token);
 
     // Kiểm tra dữ liệu trả về từ API
     console.log('API Data:', apiData);
@@ -17,17 +17,34 @@ const courseDataProcess = async (studentId, token) => {
       throw new TypeError('API data is not an array');
     }
 
-    const processedData = apiData.map(item => ({
-      imageUrl: imageUrl,
-      title: item.ten_lop,
-      instructorImage: instructorImage,
-      instructorName: item.GiangVien.User.ho_ten,
-      class_id: item.lop_id,
-      currentLesson: 0, // Bạn có thể cập nhật giá trị này nếu có thông tin
-      totalLessons: 0 // Bạn có thể cập nhật giá trị này nếu có thông tin
-    }));
+    if (user_id.startsWith('SV')) {
+      const processedData = apiData.map(item => ({
+        imageUrl: imageUrl,
+        title: item.ten_lop,
+        instructorImage: instructorImage,
+        instructorName: item.GiangVien.User.ho_ten,
+        class_id: item.lop_id,
+        currentLesson: 0, // Bạn có thể cập nhật giá trị này nếu có thông tin
+        totalLessons: 0 // Bạn có thể cập nhật giá trị này nếu có thông tin
+      }));
 
-    return processedData;
+      return processedData;
+      
+    } else if (user_id.startsWith('GV')) {
+      const processedData = apiData.map(item => ({
+        imageUrl: imageUrl,
+        title: item.ten_lop,
+        instructorImage: instructorImage,
+        instructorName: user.ho_ten,
+        class_id: item.lop_id,
+        currentLesson: 0, // Bạn có thể cập nhật giá trị này nếu có thông tin
+        totalLessons: 0 // Bạn có thể cập nhật giá trị này nếu có thông tin
+      }));
+
+      return processedData;
+    }
+
+
   } catch (error) {
     console.error('Error processing course data:', error);
     throw error;
