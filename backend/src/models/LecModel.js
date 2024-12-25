@@ -42,3 +42,23 @@ export async function getAllCourses(user, data) {
   }
 }
 
+export async function postMaterial(class_id, mate_name, url) {
+  try {
+      const pool = await connectToDb();
+      const result = await pool.request()
+          .input('lop_id', class_id)
+          .input('ten_tai_nguyen', mate_name)
+          .input('url', url)
+          .execute('ThemTaiNguyenVaoLop');
+
+      return {
+          status: 'success',
+          message: 'Material added successfully',
+          result: result.recordset
+      };
+  } catch (err) {
+      console.error('Error adding material:', err);
+      throw err;
+  }
+}
+
