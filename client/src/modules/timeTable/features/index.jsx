@@ -323,7 +323,6 @@ import { useSelector } from 'react-redux';
 import { useAuth } from '../../../hooks/useAuth';
 function Timetable() {
   const {user, token} = useAuth();
-  //const role = user.role;
 
 /********************* Fix here !***************************/
   //const user = useSelector(state => state.auth.user);

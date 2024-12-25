@@ -1,34 +1,24 @@
-import React from 'react';
-
-// Function to convert letter grade to GPA point
+import React, { useState, useEffect } from 'react';
+import getCourseData from '../services/coreBoardServices';
+import { useAuth } from "../../../hooks/useAuth";
 
 const GradeTable = () => {
-  const grades = [
-    {
-      courseName: "Mathematics",
-      assignment: 9,
-      quiz: 8,
-      midterm: 7,
-      finalExam: 6,
-      credit: 3
-    },
-    {
-      courseName: "Physics",
-      assignment: 9,
-      quiz: 8,
-      midterm: 7,
-      finalExam: 7,
-      credit: 4
-    },
-    {
-      courseName: "Chemistry",
-      assignment: 9,
-      quiz: 8,
-      midterm: 7,
-      finalExam: 7,
-      credit: 3
-    }
-  ];
+  const { user, token } = useAuth();
+  const [grades, setGrades] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getCourseData(user.id, token); // Assuming `user.id` is the `studentId`
+        setGrades(data);
+        console.log("Data of scores: ", grades)
+      } catch (error) {
+        console.error('Failed to fetch course data:', error);
+      }
+    };
+
+    fetchData();
+  }, [user.id, token]);
 
   return (
     <div className="grades-table bg-white rounded-[24px] w-full p-[50px_10px_50px_30px] mt-[51px]">
@@ -49,9 +39,10 @@ const GradeTable = () => {
           const quizPoint = grade.quiz;
           const midtermPoint = grade.midterm;
           const finalExamPoint = grade.finalExam;
-          
+
           // Calculate total points
-          const totalPoints = (assignmentPoint + quizPoint + midtermPoint + finalExamPoint) /4;
+          // Need change, totalPoints can be calculated by functions or Procedures in sql
+          const totalPoints = (assignmentPoint + quizPoint + midtermPoint + finalExamPoint) / 4;
 
           return (
             <div key={index} className="flex text-center">

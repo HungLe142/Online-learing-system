@@ -22,6 +22,7 @@ const courseDataProcess = async (studentId, token) => {
       title: item.ten_lop,
       instructorImage: instructorImage,
       instructorName: item.GiangVien.User.ho_ten,
+      class_id: item.lop_id,
       currentLesson: 0, // Bạn có thể cập nhật giá trị này nếu có thông tin
       totalLessons: 0 // Bạn có thể cập nhật giá trị này nếu có thông tin
     }));

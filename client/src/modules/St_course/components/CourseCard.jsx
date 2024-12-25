@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { ENDPOINTS} from "../../../routes/endPoints";
-function CourseCard({ imageUrl, title, instructorImage, instructorName, currentLesson, totalLessons }) {
+function CourseCard({ imageUrl, title, instructorImage, instructorName, currentLesson, totalLessons, class_id }) {
   return (
     <div className="flex flex-col px-5 py-6 mx-auto w-full bg-white rounded-3xl shadow-[0px_19px_47px_rgba(47,50,125,0.1)] max-md:px-5 max-md:mt-10 max-md:max-w-full">
       <img
@@ -11,10 +11,11 @@ function CourseCard({ imageUrl, title, instructorImage, instructorName, currentL
         className="object-contain w-full rounded-3xl aspect-[1.89] max-md:max-w-full"
       />
       <div className="self-start mt-3 text-2xl font-medium leading-relaxed text-slate-800 max-md:ml-1">
-        <Link to={ENDPOINTS.USER.COURSE_CONTENT} className="hover:text-zinc-800">
-        {title}
-        </Link>
+          <Link to={ENDPOINTS.USER.COURSE_CONTENT.replace(':id', class_id)} className="hover:text-zinc-800">
+              {title}
+          </Link>
       </div>
+
       <div className="flex gap-4 self-start mt-9 text-lg font-medium tracking-wide text-black max-md:ml-1">
         <img
           loading="lazy"

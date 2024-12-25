@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import LessonCard from "../components/LessonCard";
 import ContentCard from "../components/ContentCard";
 import { Link } from "react-router-dom";
@@ -11,12 +12,27 @@ import { useAuth } from "../../../hooks/useAuth";
 
 
 export default function CourseContent() {
-
+  let have_id = false;
+  const { id } = useParams();
+  // Check if the id is null or undefined 
+  if (!id) { 
+    console.log('ID is null or undefined'); 
+  } else { 
+    console.log('ID:', id); 
+    have_id = true;
+  }
+  
+  
   const {user, token} = useAuth();
   const [lessons, setLessons] = useState([]);
-  const [selectedClassId, setSelectedClassId] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [contentCards, setContentCards] = useState([]);
+
+  const [selectedClassId, setSelectedClassId] = useState(null);
+  const [lectureName, setLecName] = useState(null);
+  const [subName, setSubName] = useState(null);
+  const [subID, setSubID] = useState(null);
+
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -25,12 +41,31 @@ export default function CourseContent() {
             const formattedClasses = generate_class_UI_data(classes);
             setLessons(formattedClasses);
             
-            if (classes.length > 0) {
+            if (classes.length > 0 && !have_id) {
                 const classMaterials = await getRawExercise(token, classes[0].lop_id);
                 const formattedMaterials = generate_Material_UI_data(classMaterials);
                 setMaterials(classMaterials);
                 setContentCards(formattedMaterials); // Use setContentCards to update state
+                setLecName(classes[0].GiangVien.User.ho_ten)
+                setSubName(classes[0].ten_lop)
+                setSubID(classes[0].lop_id)
             }
+            else if(classes.length > 0 && have_id){
+              const classMaterials = await getRawExercise(token, id);
+              const formattedMaterials = generate_Material_UI_data(classMaterials);
+              setMaterials(classMaterials);
+              setContentCards(formattedMaterials); // Use setContentCards to update state
+              
+              for (const classItem of classes) {
+                if (classItem.lop_id === id) {
+                    setLecName(classItem.GiangVien.User.ho_ten);
+                    setSubName(classItem.ten_lop)
+                    setSubID(classItem.lop_id)
+                    break;
+                }
+              }
+            }
+
         } catch (error) {
             console.error('Error fetching classes:', error);
         }
@@ -39,7 +74,7 @@ export default function CourseContent() {
     fetchClasses();
   }, [token]);
 
-  const handleLessonClick = async (lop_id) => {
+  const handleLessonClick = async (lop_id, tenGV, tenMon, maLop) => {
     setSelectedClassId(lop_id);
     try {
         const classMaterials = await getRawExercise(token, lop_id);
@@ -47,7 +82,11 @@ export default function CourseContent() {
         setMaterials(classMaterials);
         const formattedMaterials = generate_Material_UI_data(classMaterials);
         setContentCards(formattedMaterials);
-        console.log("UI material: ", contentCards)
+        //console.log("UI material: ", contentCards)
+        setLecName(tenGV)
+        setSubName(tenMon)
+        setSubID(maLop)
+
     } catch (error) {
         console.error('Error fetching materials:', error);
     }
@@ -69,13 +108,13 @@ export default function CourseContent() {
               Tên diễn đàn
             </div>
             <div className="self-start mt-5 text-3xl font-semibold text-slate-800 max-md:ml-2.5">
-              Class
+              Lớp học
             </div>
             {lessons.map((lesson, index) => (
               <LessonCard 
                 key={index} 
                 {...lesson} 
-                onClick={() => handleLessonClick(lesson.lop_id)}
+                onClick={() => handleLessonClick(lesson.lop_id, lesson.lec_name, lesson.class_name, lesson.class_id)}
               />
             ))}
 
@@ -85,11 +124,11 @@ export default function CourseContent() {
           <div className="flex flex-col w-full max-md:mt-1.5 max-md:max-w-full">
             <div className="flex flex-wrap gap-5 justify-between px-16 py-7 text-white bg-sky-950 max-md:px-5 max-md:max-w-full">
               <div className="flex flex-col">
-                <div className="text-5xl">TÊN MÔN HỌC</div>
-                <div className="self-start mt-1.5 text-2xl">MÃ MÔN HỌC</div>
+                <div className="text-5xl">{subName}</div>
+                <div className="self-start mt-1.5 text-2xl">{subID}</div>
               </div>
               <div className="self-end mt-16 text-2xl max-md:mt-10">
-                Tên giảng viên
+              {lectureName}
               </div>
             </div>
             <div className="flex flex-col items-start px-3.5 pt-9 pb-16 mt-3.5 w-full bg-blue-300 bg-blend-normal max-md:mr-1.5 max-md:max-w-full">
@@ -107,7 +146,7 @@ export default function CourseContent() {
               
               
               <div className="mt-12 ml-9 text-3xl text-black max-md:mt-10 max-md:ml-2.5">
-                Exercise 02221
+                Nộp bài
               </div>
               <div className="mt-5 max-w-full w-[662px]">
                 <div className="flex gap-5 max-md:flex-col">
@@ -155,7 +194,7 @@ export default function CourseContent() {
                     className="object-contain shrink-0 rounded-none aspect-square w-[71px]"
                   />
                   <div className="flex flex-col">
-                    <div>Tên giảng viên</div>
+                    <div>{lectureName}</div>
                     <img
                       loading="lazy"
                       src="https://cdn.builder.io/api/v1/image/assets/TEMP/4383e6ed47c9477218aeb2c12171c4dfbad7c41203b36d6c7861839591e0be2b?placeholderIfAbsent=true&apiKey=673b43bfd43741dfb5fb4f80631ec9b7"

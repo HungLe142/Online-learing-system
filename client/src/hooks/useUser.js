@@ -1,16 +1,19 @@
 import axios from 'axios';
 import APIEndPoint from "../constants/apiEndpoints";
+import {SEMESTER} from "../constants/constants"
 
-export const getTimeTable = async (studentId, lecturerId) => {
+export const getTimeTable = async (studentId, lecturerId, token) => {
+  let semesterId = SEMESTER;
   const serverUrl = APIEndPoint.SERVER_URL;
 
   if (lecturerId == null && studentId != null) {
+    // get stu's table
     try {
-      const response = await axios.get(`${serverUrl}/student/courses`, {
-        params: {
-          studentID: studentId,
-          semesterID: 'HK241',
-        },
+      const url = `${serverUrl}/student/timetable?hoc_ky=${semesterId}`;
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+      }
       });
       return response.data;
     } catch (error) {
@@ -18,12 +21,13 @@ export const getTimeTable = async (studentId, lecturerId) => {
       throw error;
     }
   } else if (studentId == null && lecturerId != null) {
+    // get lec's table
     try {
-      const response = await axios.get(`${serverUrl}/lecturer/courses`, {
-        params: {
-          lecturerID: lecturerId,
-          semesterID: 'HK241',
-        },
+      const url = `${serverUrl}/lecturer/timetable?hoc_ky=${semesterId}`;
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+      }
       });
       return response.data;
     } catch (error) {

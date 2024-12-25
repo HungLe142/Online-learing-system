@@ -9,11 +9,15 @@ export const getRawClasses = async (token) => {
 };
 
 export const generate_class_UI_data = (classes) => {
-    const bgColors = ["bg-teal-400", "bg-amber-500 bg-opacity-30", "bg-blue-300 bg-opacity-30", "bg-red-400 bg-opacity-30"];
+    //const bgColors = ["bg-teal-400", "bg-amber-500 bg-opacity-30", "bg-blue-300 bg-opacity-30", "bg-red-400 bg-opacity-30"];
     return classes.map((item, index) => ({
         title: item.ten_lop,
-        bgColor: bgColors[index % bgColors.length],
-        lop_id: item.lop_id
+        //bgColor: bgColors[index % bgColors.length],
+        bgColor: "bg-amber-500 bg-opacity-30",
+        lop_id: item.lop_id,
+        lec_name: item.GiangVien.User.ho_ten,
+        class_name: item.ten_lop,
+        class_id: item.lop_id
     }));
 };
 
