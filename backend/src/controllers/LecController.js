@@ -1,4 +1,4 @@
-import { getTimetable, getAllCourses, postMaterial } from '../models/LecModel.js';
+import { getTimetable, getAllCourses, postMaterial, deleteMaterial } from '../models/LecModel.js';
 
 export async function GetTimetable(req, res) {
     try {
@@ -41,3 +41,18 @@ export async function CreateMaterial(req, res) {
         res.status(500).json({ error: error.message });
     }
 }
+
+export async function RemoveMaterial(req, res) {
+    try {
+        // input: class_id, material's name
+        const class_id = req.query.lop_id;
+        const mate_name = req.query.ten_tai_lieu;
+
+        const result = await deleteMaterial(class_id, mate_name);
+        return res.status(200).json(result);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+

@@ -62,3 +62,24 @@ export async function postMaterial(class_id, mate_name, url) {
   }
 }
 
+export async function deleteMaterial(class_id, mate_name) {
+  try {
+      const pool = await connectToDb();
+      const result = await pool.request()
+          .input('lop_id', class_id)
+          .input('ten_tai_nguyen', mate_name)
+          .query(`
+              DELETE FROM TAI_NGUYEN_LOP_HOC
+              WHERE lop_id = @lop_id AND ten_tai_nguyen = @ten_tai_nguyen
+          `);
+
+      return {
+          status: 'success',
+          message: 'Material removed successfully',
+          result: result.recordset
+      };
+  } catch (err) {
+      console.error('Error removing material:', err);
+      throw err;
+  }
+}
