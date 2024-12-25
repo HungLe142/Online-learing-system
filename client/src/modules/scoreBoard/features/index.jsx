@@ -8,14 +8,14 @@ const ScoreBoard = () => {
   return (
     <div className="student-grades bg-[#9DCCFF] max-w-[1705px] w-full">
       <div className="grades-container flex gap-5">
-        <div className="main-content flex flex-col w-[70%]">
+        <div className="main-content flex flex-col w-[100%]">
           <Header />
           <GradeTable />
         </div>
-        <div className="sidebar flex flex-col w-[30%] ml-[20px]">
-          <SemesterInfo />
-          <Chart />
-        </div>
+        {/* <div className="sidebar flex flex-col w-[30%] ml-[20px]"> */}
+          {/* <SemesterInfo /> */}
+          {/* <Chart /> */}
+        {/* </div> */}
       </div>
     </div>
   );
