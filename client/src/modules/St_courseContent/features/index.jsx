@@ -6,7 +6,7 @@ import ContentCard from "../components/ContentCard";
 import { Link } from "react-router-dom";
 import { ENDPOINTS } from "../../../routes/endPoints";
 import  icons_back from "../../../assets/icons/icon_back.png";
-import {getRawClasses, getRawExercise, generate_class_UI_data, generate_Material_UI_data} from "../services/courseContentProcess";
+import {getRawClasses, getRawExercise, generate_class_UI_data, generate_Material_UI_data, uploadMaterial, removeMaterial} from "../services/courseContentService";
 import { useSelector } from 'react-redux';
 import { useAuth } from "../../../hooks/useAuth";
 
@@ -28,10 +28,17 @@ export default function CourseContent() {
   const [materials, setMaterials] = useState([]);
   const [contentCards, setContentCards] = useState([]);
 
-  const [selectedClassId, setSelectedClassId] = useState(null);
   const [lectureName, setLecName] = useState(null);
   const [subName, setSubName] = useState(null);
-  const [subID, setSubID] = useState(null);
+  const [classID, setClassID] = useState(null);
+
+  // For entries in uploading document
+  const [materialName, setMaterialName] = useState('');
+  const [materialLink, setMaterialLink] = useState('');
+
+  // For UX:
+  const [isLoading, setIsLoading] = useState(false);
+
 
 
   useEffect(() => {
@@ -40,30 +47,32 @@ export default function CourseContent() {
             const classes = await getRawClasses(user.user_id, token);
             const formattedClasses = generate_class_UI_data(classes, user);
             setLessons(formattedClasses);
-            
+
             if (classes.length > 0 && !have_id) {
+                setLecName(classes[0].GiangVien.User.ho_ten)
+                setSubName(classes[0].ten_lop)
+                setClassID(classes[0].lop_id)
                 const classMaterials = await getRawExercise(token, classes[0].lop_id);
                 const formattedMaterials = generate_Material_UI_data(classMaterials);
                 setMaterials(classMaterials);
                 setContentCards(formattedMaterials); // Use setContentCards to update state
-                setLecName(classes[0].GiangVien.User.ho_ten)
-                setSubName(classes[0].ten_lop)
-                setSubID(classes[0].lop_id)
+               
             }
             else if(classes.length > 0 && have_id){
+              for (const classItem of classes) {
+                if (classItem.lop_id === id) {
+                    setLecName(user.user_id.startsWith('SV') ? classItem.GiangVien.User.ho_ten : user.ho_ten);
+                    setSubName(classItem.ten_lop)
+                    setClassID(classItem.lop_id)
+                    break;
+                }
+              }
+
               const classMaterials = await getRawExercise(token, id);
               const formattedMaterials = generate_Material_UI_data(classMaterials);
               setMaterials(classMaterials);
               setContentCards(formattedMaterials); // Use setContentCards to update state
               
-              for (const classItem of classes) {
-                if (classItem.lop_id === id) {
-                    setLecName(user.user_id.startsWith('SV') ? classItem.GiangVien.User.ho_ten : user.ho_ten);
-                    setSubName(classItem.ten_lop)
-                    setSubID(classItem.lop_id)
-                    break;
-                }
-              }
             }
 
         } catch (error) {
@@ -75,8 +84,8 @@ export default function CourseContent() {
   }, [token]);
 
   const handleLessonClick = async (lop_id, tenGV, tenMon, maLop) => {
-    setSelectedClassId(lop_id);
     try {
+        setIsLoading(true);
         const classMaterials = await getRawExercise(token, lop_id);
         //console.log("Get material: ", classMaterials)
         setMaterials(classMaterials);
@@ -85,16 +94,43 @@ export default function CourseContent() {
         //console.log("UI material: ", contentCards)
         setLecName(tenGV)
         setSubName(tenMon)
-        setSubID(maLop)
+        setClassID(maLop)
+        setIsLoading(false);
 
     } catch (error) {
         console.error('Error fetching materials:', error);
+        setIsLoading(false);
     }
-    console.log("Selected Class ID:", lop_id);
+  };
+  const handleUpload = async () => {
+    try {
+      setIsLoading(true);
+      const response = await uploadMaterial(token, materialName, materialLink, classID);
+      console.log('Upload successful:', response);
+      alert('Thành Công');
+      window.location.reload(); // Reload the page if the operation was successful
+    } catch (error) {
+      console.error('Failed to upload material:', error);
+      alert('Thất bại');
+      setIsLoading(false);
+    }
+  };
+  const handleRemoveMaterial = async (materialName) => {
+    try {
+      setIsLoading(true);
+      const response = await removeMaterial(token, materialName, classID);
+      console.log('Remove successful:', response);
+      alert('Thành Công');
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to remove material:', error);
+      alert('Thất bại');
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="overflow-hidden pl-8 bg-white max-md:pl-5">
+    <div className="overflow-hidden pl-8 bg-white max-md:pl-5 relative ${isLoading ? 'pointer-events-none opacity-50' : ''}">
       <div className="flex gap-5 max-md:flex-col">
         <div className="flex flex-col w-[24%] max-md:ml-0 max-md:w-full">
           <div className="flex flex-col mt-7 w-full max-md:mt-8 max-md:max-w-full">
@@ -125,67 +161,86 @@ export default function CourseContent() {
             <div className="flex flex-wrap gap-5 justify-between px-16 py-7 text-white bg-sky-950 max-md:px-5 max-md:max-w-full">
               <div className="flex flex-col">
                 <div className="text-5xl">{subName}</div>
-                <div className="self-start mt-1.5 text-2xl">{subID}</div>
+                <div className="self-start mt-1.5 text-2xl">{classID}</div>
               </div>
               <div className="self-end mt-16 text-2xl max-md:mt-10">
               {lectureName}
               </div>
             </div>
             <div className="flex flex-col items-start px-3.5 pt-9 pb-16 mt-3.5 w-full bg-blue-300 bg-blend-normal max-md:mr-1.5 max-md:max-w-full">
-              <div className="self-stretch mt-7 ml-5 max-md:max-w-full">
-                <div className="flex gap-5 max-md:flex-col">
-                    {contentCards.map((card, index) => (
-                        <div key={index} className="flex flex-col w-3/12 max-md:ml-0 max-md:w-full">
-                            <ContentCard {...card} />
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-              
-              
-              
-            <div className="mt-12 ml-9 text-3xl text-black max-md:mt-10 max-md:ml-2.5">
-              {user.user_id.startsWith('SV') ? 'Nộp bài' : 'Bài nộp của sinh viên'}
-            </div>
-
-              <div className="mt-5 max-w-full w-[662px]">
-                <div className="flex gap-5 max-md:flex-col">
-                  {[1, 2].map((index) => (
-                    <div key={index} className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
-                      <div className="flex flex-col items-start px-4 pt-4 pb-7 mx-auto w-full text-2xl font-medium bg-white rounded-3xl shadow-[0px_19px_47px_rgba(47,50,125,0.1)] max-md:mt-10">
-                        <img
-                          loading="lazy"
-                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/814d904cbf8b0127bfeb9ed592c731c9807ae1a3045dc990c88bf615d23d7f3a?placeholderIfAbsent=true&apiKey=673b43bfd43741dfb5fb4f80631ec9b7"
-                          alt="Exercise content"
-                          className="object-contain self-stretch w-full rounded-3xl aspect-[1.34]"
-                        />
-                        <div className="flex gap-4 mt-7 text-xl tracking-wide leading-relaxed text-gray-500 whitespace-nowrap">
-                          <img
-                            loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/6728ec04b75fa482841b1a3f4151acb1d91bbe0cc702cb95508c754e82f8faa0?placeholderIfAbsent=true&apiKey=673b43bfd43741dfb5fb4f80631ec9b7"
-                            alt=""
-                            className="object-contain shrink-0 w-8 aspect-square"
-                          />
-                          <div className="self-start">Download</div>
-                        </div>
-                        <div className="flex gap-10 mt-8 text-center text-slate-800">
-                          <img
-                            loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/ae1654e2f24f8136fc4c69d4e7a3a4d5469b4393027a6fc217e3cfb111e63185?placeholderIfAbsent=true&apiKey=673b43bfd43741dfb5fb4f80631ec9b7"
-                            alt=""
-                            className="object-contain shrink-0 self-start rounded-sm aspect-[0.9] w-[27px]"
-                          />
-                          <div>Chủ đề excercise</div>
-                        </div>
-                        <button className="px-5 py-7 mt-14 font-bold tracking-wide text-center text-white bg-teal-400 rounded-2xl max-md:mt-10">
-                          Upload file đáp án
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            
+            <div className="self-stretch mt-7 ml-5 max-md:max-w-full overflow-x-auto">
+              <div className="flex gap-5 max-md:flex-col">
+                {contentCards.map((card, index) => (
+                  <div key={index} className="flex flex-col w-3/12 max-md:ml-0 max-md:w-full">
+                    <ContentCard
+                      imageUrl={card.imageUrl}
+                      title={card.title}
+                      url={card.url}
+                      onClose={() => handleRemoveMaterial(card.title)}
+                    />
+                  </div>
+                ))}
               </div>
+            </div>
+        
+            {user.role !== 'student' && (    
+              <div className="mt-12 ml-9 text-3xl text-black max-md:mt-10 max-md:ml-2.5">
+                {user.user_id.startsWith('SV') ? 'Nộp bài' : 'Đăng tải tài liệu'}
+              </div>
+            )}
+
+            {user.role !== 'student' && (    
+              <div className="mt-5 max-w-full w-[662px]">
+                  <div className="flex gap-5 max-md:flex-col">
+                    {[1].map((index) => (
+                      <div key={index} className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
+                        <div className="flex flex-col items-start px-4 pt-4 pb-7 mx-auto w-full text-2xl font-medium bg-white rounded-3xl shadow-[0px_19px_47px_rgba(47,50,125,0.1)] max-md:mt-10">
+                          <img
+                            loading="lazy"
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/814d904cbf8b0127bfeb9ed592c731c9807ae1a3045dc990c88bf615d23d7f3a?placeholderIfAbsent=true&apiKey=673b43bfd43741dfb5fb4f80631ec9b7"
+                            alt="Exercise content"
+                            className="object-contain self-stretch w-full rounded-3xl aspect-[1.34]"
+                          />
+                          <div className="flex gap-4 mt-7 text-xl tracking-wide leading-relaxed text-gray-500 whitespace-nowrap">
+                            <img
+                              loading="lazy"
+                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA-uPMTH57wswC6fx_GIFiiXSfEODTSMAoBA&s"
+                              alt=""
+                              className="object-contain shrink-0 w-8 aspect-square"
+                            />
+                            <div className="self-start">Upload</div>
+                          </div>
+                          <div className="flex flex-col gap-4 mt-8 w-full text-center text-slate-800">
+                            <input
+                              type="text"
+                              placeholder="Tên tài liệu"
+                              value={materialName}
+                              onChange={(e) => setMaterialName(e.target.value)}
+                              className="p-2 border border-gray-300 rounded-md"
+                            />
+                            <input
+                              type="text"
+                              placeholder="Link tài liệu"
+                              value={materialLink}
+                              onChange={(e) => setMaterialLink(e.target.value)}
+                              className="p-2 border border-gray-300 rounded-md"
+                            />
+                          </div>
+                          <button 
+                            onClick={handleUpload}
+                            className="w-full px-5 py-7 mt-14 font-bold tracking-wide text-center text-white bg-teal-400 rounded-2xl max-md:mt-10"
+                          >
+                            Upload
+                          </button>
+
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+              </div>
+            )}
+            
               <div className="flex flex-col items-start self-center px-16 py-11 w-full rounded-2xl bg-amber-500 bg-opacity-30 max-w-[1309px] mt-[603px] max-md:px-5 max-md:mt-10 max-md:max-w-full">
                 <div className="flex gap-5 items-start text-2xl font-semibold text-gray-800">
                   <img
