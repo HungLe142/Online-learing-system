@@ -158,6 +158,12 @@ const admin_create_course = {
   title: `Admin Home | ${WEB_NAME}`,
   Layout: AdminLayout,
 }
+const admin_StudentList = {
+  path: ENDPOINTS.ADMIN.STUDENTLIST,
+  component: lazy(() => delayRoute()(import("../modules/admin_table/features/index"))),
+  title: `Admin Home | ${WEB_NAME}`,
+  Layout: AdminLayout,
+}
 export const privateRouteData = [];
 export const publicRoutesData = [
   landingPage, 
@@ -177,7 +183,8 @@ export const publicRoutesData = [
   TcforumPage,
   TchomePage,
   TctimetablePage,
-  GradeEntryPage
+  GradeEntryPage,
+  admin_StudentList
 ];
 
 // Improved route rendering function

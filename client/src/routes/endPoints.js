@@ -28,10 +28,7 @@ export const ENDPOINTS = Object.freeze({
         INFO: "/admin/info",
         TIMETABLE: "/admin/timetable",
         CREATE_COURSE: "/admin/create-course",
-        COURSE_CONTENT: "/admin/course-content/:id",
-        EDIT_INFO: "/admin/edit-info",
-        FORUM: "/admin/forum/:id",
-        SCOREBOARD: "/admin/scoreboard"
+        STUDENTLIST: "/admin/students-list",
     }
     
 });

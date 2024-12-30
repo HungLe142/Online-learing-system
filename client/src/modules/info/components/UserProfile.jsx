@@ -52,7 +52,7 @@ function UserProfile() {
           label="Location"
           value={personalInfo.location}
           id="location"
-        />
+        /> 
 
         <InputField 
           label="Email"
